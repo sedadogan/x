@@ -4,5 +4,5 @@
 unmailboxes +msgid.cache +Archive +admin +temp +junk +spam +bogus "+All Mail"
 
 # Posta listelerini ayrı ayrı tanımla.
-lists bilen@bil.omu.edu.tr, forum@bil.omu.edu.tr, bildim@bil.omu.edu.tr, web@bil.omu.edu.tr, teknik@uzem.omu.edu.tr
-subscribe bilen@bil.omu.edu.tr, forum@bil.omu.edu.tr, bildim@bil.omu.edu.tr, web@bil.omu.edu.tr, teknik@uzem.omu.edu.tr
+lists bilen@bil.omu.edu.tr forum@bil.omu.edu.tr bildim@bil.omu.edu.tr web@bil.omu.edu.tr bil@bil.omu.edu.tr hoca@bil.omu.edu.tr teknik@uzem.omu.edu.tr
+subscribe bilen@bil.omu.edu.tr forum@bil.omu.edu.tr bildim@bil.omu.edu.tr web@bil.omu.edu.tr bil@bil.omu.edu.tr hoca@bil.omu.edu.tr teknik@uzem.omu.edu.tr
