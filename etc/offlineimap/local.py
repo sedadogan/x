@@ -6,6 +6,8 @@ __builtin__.PRIORITIZED = [
 	'INBOX',
         'inbox',
 	'Gelen Kutusu',
+	'dev',
+	'admin',
 	'bilen',
 	'bildim',
 	'web',
