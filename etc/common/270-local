@@ -6,3 +6,8 @@ kant|spinoza|marx|descartes|wittgenstein|averroes|ghazali|farabi)
 	setattr main
 	;;
 esac
+
+# Debian paketlemelerinde kullanılacak isim ve adres.
+DEBFULLNAME='Recai Oktaş'
+DEBEMAIL='roktas@debian.org'
+export DEBFULLNAME DEBEMAIL
