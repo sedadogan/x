@@ -1,0 +1,16 @@
+# Numlockx gerekiyor
+[ -x /usr/bin/numlockx ] || return 0
+
+if {
+	# USB klavye bağlıysa...
+	[ -x /usr/bin/lsusb ] && /usr/bin/lsusb 2>/dev/null | egrep -qi keyboard;
+} || {
+	# ... veya bu bir dizüstü değilse
+	[ -x /usr/bin/laptop-detect ] && ! /usr/bin/laptop-detect;
+}; then
+	# Numlock açık
+	/usr/bin/numlockx on
+else
+	# Diğer tüm durumlarda kapalı
+	/usr/bin/numlockx off
+fi
