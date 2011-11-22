@@ -142,5 +142,6 @@ if exists('loaded_taglist')
 endif
 
 if exists("g:loaded_localvimrc")
+	let g:localvimrc_sandbox = 0
 	let g:localvimrc_ask = 0
 endif
