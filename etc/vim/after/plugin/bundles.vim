@@ -140,3 +140,7 @@ if exists('loaded_taglist')
 	nnoremap <silent> <F8> :TlistToggle<CR>
 	let tlist_go_settings = 'go;p:Packages;t:Types;f:Functions;c:Constants;v:Variables'
 endif
+
+if exists("g:loaded_localvimrc")
+	let g:localvimrc_ask = 0
+endif
