@@ -2,3 +2,5 @@
 !.gitignore
 !/autostart/
 !/autostart/x-xsession.desktop
+!/mc/
+!/mc/bashrc
