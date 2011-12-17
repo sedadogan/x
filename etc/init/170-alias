@@ -63,4 +63,4 @@ alias h='git commit -a -m hmm'
 alias gbp='git-buildpackage'
 
 # Youtube'den ses dosyası indir.
-alias yt="youtube-dl -o '%(title)s.%(ext)s' --extract-audio"
+alias yt="youtube-dl -o '%(title)s.%(ext)s' --extract-audio --audio-format=mp3"
