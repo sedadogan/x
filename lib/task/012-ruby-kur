@@ -8,7 +8,7 @@ sudoattempt
 # bir nedenle sistemde bulunan alternatif artıklarını elle sil
 for p in ruby gem ri erb testrb rdoc; do
 	say "$p sistem alternatifleri (varsa) silinecek..."
-	sudo update-alternatives --quiet --remove-all $p >/dev/null ||:
+	sudo update-alternatives --quiet --remove-all $p 2>/dev/null ||:
 done
 
 if [ -z "$HAS_APT_UPDATED" ]; then
@@ -44,20 +44,21 @@ if dpkg --compare-versions "${RUBY_VERSION}" lt 1.9.2.180-2; then
 			--slave   /usr/bin/rdoc rdoc /usr/bin/rdoc${v} \
 			--slave   /usr/bin/ri ri /usr/bin/ri${v} \
 			--slave   /usr/bin/testrb testrb /usr/bin/testrb${v} \
-			>/dev/null ||: # hatasız ve sessiz
+			2>/dev/null ||: # hatasız ve sessiz
 		# gem
 		sudo update-alternatives --quiet --install /usr/bin/gem gem /usr/bin/gem${v} $p \
 			--slave   /usr/share/man/man1/gem.1.gz gem.1.gz \
 						/usr/share/man/man1/gem${v}.1.gz \
 			--slave /etc/bash_completion.d/gem bash_completion_gem \
 						/etc/bash_completion.d/gem${v} \
-			>/dev/null ||: # hatasız ve sessiz
+			2>/dev/null ||: # hatasız ve sessiz
 		# 1.9.1 → 10 ve 1.8 → 50 önceliğinde (öntanımlı ruby1.8)
 		p+=40
 	done
 fi
 
 # Resmi alternatiflerde ruby1.8 öntanımlı.  Bunu 1.9.1 yap.
-say "Öntanımlı Ruby sürümü 1.9.1 olarak ayarlanıyor..."
-sudo update-alternatives --quiet --set ruby /usr/bin/ruby1.9.1
-sudo update-alternatives --quiet --set gem /usr/bin/gem1.9.1
+say "Öntanımlı Ruby sürümü 1.9.1 olarak ayarlanıyor..."; {
+	sudo update-alternatives --quiet --set ruby /usr/bin/ruby1.9.1
+	sudo update-alternatives --quiet --set gem /usr/bin/gem1.9.1
+} 2>/dev/null
