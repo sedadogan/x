@@ -8,7 +8,7 @@ sudoattempt
 # bir nedenle sistemde bulunan alternatif artıklarını elle sil
 for p in ruby gem ri erb testrb rdoc; do
 	say "$p sistem alternatifleri (varsa) silinecek..."
-	sudo update-alternatives --remove-all $p >/dev/null 2>&1 ||:
+	sudo update-alternatives --quiet --remove-all $p >/dev/null ||:
 done
 
 if [ -z "$HAS_APT_UPDATED" ]; then
@@ -26,7 +26,7 @@ if dpkg --compare-versions "${RUBY_VERSION}" lt 1.9.2.180-2; then
 	p=10; for v in "1.9.1" "1.8"; do
 		say "Ruby ${v} sistem alternatifleri kuruluyor..."
 		# ruby
-		sudo update-alternatives --install /usr/bin/ruby ruby /usr/bin/ruby${v} $p \
+		sudo update-alternatives --quiet --install /usr/bin/ruby ruby /usr/bin/ruby${v} $p \
 			--slave   /usr/share/man/man1/ruby.1.gz ruby.1.gz \
 						/usr/share/man/man1/ruby${v}.1.gz \
 			--slave   /usr/share/man/man1/erb.1.gz erb.1.gz \
@@ -43,19 +43,21 @@ if dpkg --compare-versions "${RUBY_VERSION}" lt 1.9.2.180-2; then
 			--slave   /usr/bin/irb irb /usr/bin/irb${v} \
 			--slave   /usr/bin/rdoc rdoc /usr/bin/rdoc${v} \
 			--slave   /usr/bin/ri ri /usr/bin/ri${v} \
-			--slave   /usr/bin/testrb testrb /usr/bin/testrb${v} ||: # hatasız
+			--slave   /usr/bin/testrb testrb /usr/bin/testrb${v} \
+			>/dev/null ||: # hatasız ve sessiz
 		# gem
-		sudo update-alternatives --install /usr/bin/gem gem /usr/bin/gem${v} $p \
+		sudo update-alternatives --quiet --install /usr/bin/gem gem /usr/bin/gem${v} $p \
 			--slave   /usr/share/man/man1/gem.1.gz gem.1.gz \
 						/usr/share/man/man1/gem${v}.1.gz \
 			--slave /etc/bash_completion.d/gem bash_completion_gem \
-						/etc/bash_completion.d/gem${v} ||: # hatasız
+						/etc/bash_completion.d/gem${v} \
+			>/dev/null ||: # hatasız ve sessiz
 		# 1.9.1 → 10 ve 1.8 → 50 önceliğinde (öntanımlı ruby1.8)
 		p+=40
-	done >/dev/null 2>&1 # sessiz
+	done
 fi
 
 # Resmi alternatiflerde ruby1.8 öntanımlı.  Bunu 1.9.1 yap.
 say "Öntanımlı Ruby sürümü 1.9.1 olarak ayarlanıyor..."
-sudo update-alternatives --set ruby /usr/bin/ruby1.9.1
-sudo update-alternatives --set gem /usr/bin/gem1.9.1
+sudo update-alternatives --quiet --set ruby /usr/bin/ruby1.9.1
+sudo update-alternatives --quiet --set gem /usr/bin/gem1.9.1
