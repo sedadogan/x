@@ -18,6 +18,7 @@ grit
 gx
 haml
 json
+launchy
 mime-types
 octopussy
 thor

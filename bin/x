@@ -864,6 +864,47 @@ installgems() {
 	done
 }
 
+# debian paket deposu ekle
+adddebrepository() {
+	local name repository distribution components keyurl
+
+	[ $# -ge 5 ] || bug "argüman sayısı eksik"
+
+	name="$1"
+	repository="$2"
+	distribution="$3"
+	components="$4"
+	keyurl="$5"
+
+	case "$distribution" in
+	""|-) distribution=$(lsb_release -s -c 2>/dev/null ||:) ;;
+	esac
+	case "$components" in
+	""|-) components='main' ;;
+	esac
+	case "$repository" in
+	http:|ftp:) ;;
+	*) repository="http://${repository}" ;;
+	esac
+	case "$keyurl" in
+	http:|ftp:) ;;
+	"") ;;
+	*) keyurl="http://${keyurl}" ;;
+	esac
+
+	list=/etc/apt/sources.list.d/$name.list
+	if [ ! -f "$list" ]; then
+		sudoattempt
+		sudo sh -c "cat >$list <<EOF
+deb $repository $distribution $components
+EOF
+"
+		if [ -n "$keyurl" ]; then
+			wget "$keyurl" -qO- | sudo apt-key add -
+		fi
+	fi
+}
+
 # verilen dizgilerin ilk harflerini büyüt
 titlecase() {
 	local s
@@ -1513,6 +1554,20 @@ go() {
 	# Ön kurulum
 	# ---------------------------------------------------------------------
 
+	sudoattempt
+
+	say "19 paket deposu (yoksa) ekleniyor..."
+	adddebrepository \
+		"19" \
+		"http://deb.ondokuz.biz" \
+		"sid" \
+		"main contrib non-free" \
+		"deb.ondokuz.biz/archive.key" ||:
+
+	say "Paket indeksleri güncelleniyor..."
+	xaptget update ||:
+	HAS_APT_UPDATED=yes
+
 	# Gerekli paketleri kontrol et, bir nedenle kuramazsak devam etme.
 	# XXX Bu denetimi paket adıyla program adının aynı olması varsayımı
 	# altında programın varlığına bakarak yapıyoruz.  dpkg-query yoluyla
@@ -1526,12 +1581,6 @@ go() {
 	if [ -n "$missing" ]; then
 		say "'$(echo $missing)' paket(ler)i kurulu değil. " \
 		    "Önce bunlar kurulacak."
-
-		say "Paket indeksleri güncelleniyor..."
-		sudoattempt
-		xaptget update ||:
-		HAS_APT_UPDATED=yes
-
 		xaptget install $missing
 
 		# Kurulum için bize gereken tüm paketler artık kurulmuş olmalı.
