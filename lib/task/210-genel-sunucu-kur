@@ -31,7 +31,7 @@ wwwconfig-common
 GEM_BASE="
 mysql
 rack
-sqlite3-ruby
+sqlite3
 "
 
 MYSQLCONFDIR=/etc/mysql/conf.d
