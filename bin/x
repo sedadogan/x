@@ -1554,20 +1554,6 @@ go() {
 	# Ön kurulum
 	# ---------------------------------------------------------------------
 
-	sudoattempt
-
-	say "19 paket deposu (yoksa) ekleniyor..."
-	adddebrepository \
-		"19" \
-		"http://deb.ondokuz.biz" \
-		"sid" \
-		"main contrib non-free" \
-		"deb.ondokuz.biz/archive.key" ||:
-
-	say "Paket indeksleri güncelleniyor..."
-	xaptget update ||:
-	HAS_APT_UPDATED=yes
-
 	# Gerekli paketleri kontrol et, bir nedenle kuramazsak devam etme.
 	# XXX Bu denetimi paket adıyla program adının aynı olması varsayımı
 	# altında programın varlığına bakarak yapıyoruz.  dpkg-query yoluyla
@@ -1581,6 +1567,13 @@ go() {
 	if [ -n "$missing" ]; then
 		say "'$(echo $missing)' paket(ler)i kurulu değil. " \
 		    "Önce bunlar kurulacak."
+
+		sudoattempt
+
+		say "Paket indeksleri güncelleniyor..."
+		xaptget update ||:
+		HAS_APT_UPDATED=yes
+
 		xaptget install $missing
 
 		# Kurulum için bize gereken tüm paketler artık kurulmuş olmalı.
@@ -1617,6 +1610,21 @@ go() {
 			exit 0
 		fi
 	fi
+
+	# 10 paket deposunu ekle.
+	sudoattempt
+
+	say "19 paket deposu (yoksa) ekleniyor..."
+	adddebrepository \
+		"19" \
+		"http://deb.ondokuz.biz" \
+		"sid" \
+		"main contrib non-free" \
+		"deb.ondokuz.biz/archive.key" ||:
+
+	say "Paket indeksleri güncelleniyor..."
+	xaptget update ||:
+	HAS_APT_UPDATED=yes
 
 	# ---------------------------------------------------------------------
 	# GitHub bilgisi topla
