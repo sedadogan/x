@@ -868,7 +868,7 @@ installgems() {
 adddebrepository() {
 	local name repository distribution components keyurl
 
-	[ $# -ge 5 ] || bug "argüman sayısı eksik"
+	[ $# -ge 4 ] || bug "adddebrepository: argüman sayısı eksik"
 
 	name="$1"
 	repository="$2"
