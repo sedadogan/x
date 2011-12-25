@@ -68,26 +68,12 @@ fi
 
 sudoattempt
 
-try=2
-while [ $try -gt 0 ]; do
-	err=0
-
-	say "Temel Gem paketleri kuruluyor..."
-	xgem191 install $GEM_BASE || err=$?
-
-	if ! anyattr server && anyattr gui fat; then
-		say "Standart bir çalışma ortamı için gerekli Gem paketleri kuruluyor..."
-		xgem191 install $GEM_STANDARD || err=$?
-	fi
-	if anyattr fat; then
-		say "Geliştirici ortamı için gerekli ekstra Gem paketleri kuruluyor..."
-		xgem191 install $GEM_EXTRA || err=$?
-	fi
-
-	# hata yoksa çık
-	[ $err -ne 0 ] || break
-
-	cry "Bazı Gem paketlerinin kurulumunda hata oluştu. " \
-	    "Tekrar denenerek kuruluma devam edilecek..."
-	try=$(($try - 1))
-done
+installgems "Temel Gem paketleri kuruluyor" $GEM_BASE
+if ! anyattr server && anyattr gui fat; then
+	installgems "Standart bir çalışma ortamı için gerekli Gem paketleri kuruluyor" \
+		$GEM_STANDARD
+fi
+if anyattr fat; then
+	installgems "Geliştirici ortamı için gerekli ekstra Gem paketleri kuruluyor" \
+		$GEM_EXTRA
+fi

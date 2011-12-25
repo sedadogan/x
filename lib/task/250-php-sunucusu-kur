@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DEB_BASE="
+php5-cgi
+php5-cli
+php5-curl
+php5-fpm
+php5-gd
+php5-imagick
+php5-mcrypt
+php5-memcache
+php5-mysql
+php5-sqlite
+php5-suhosin
+php5-xmlrpc
+php5-xsl
+php-apc
+"
+
+if anyattr gui; then
+	cry "Bu bir masaüstü sistem gibi görünüyor. " \
+	    "Böyle bir sisteme sunucu kurmamalısınız."
+	if ! yesno "Yine de devam edilsin mi?" h; then
+		cry "Güzel!"
+		exit
+	fi
+fi
+
+taskrun 2 genel-sunucu
+
+sudoattempt
+installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE

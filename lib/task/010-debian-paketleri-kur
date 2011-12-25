@@ -198,11 +198,6 @@ xdotool
 xfonts-scalable
 "
 
-# Aptitude hata verdiğinde bir de APT ile dene
-aptitude_or_aptget() {
-	xaptitude "$@" || xaptget "$@"
-}
-
 if ! anyattr server && anyattr gui; then
 	if [ "$IS_NEWINSTALL" ]; then default=e; else default=h; fi
 	if yesno "Ekstra Debian paketleri kurulsun mu?" $default; then
@@ -229,26 +224,11 @@ for p in gnome gnome-desktop-environment; do
 	[ -n "$(missingdeb $p)" ] || DEB_GNOME="$DEB_GNOME $p"
 done
 
-try=2
-while [ $try -gt 0 ]; do
-	err=0
-
-	say "Temel Deb paketleri kuruluyor..."
-	aptitude_or_aptget install $DEB_BASE || err=$?
-
-	if ! anyattr server && anyattr gui fat; then
-		say "Standart bir çalışma ortamı için gerekli Deb paketleri kuruluyor..."
-		aptitude_or_aptget install $DEB_STANDARD $DEB_GNOME || err=$?
-	fi
-	if anyattr fat; then
-		say "Ekstra Deb paketleri kuruluyor..."
-		aptitude_or_aptget install $DEB_EXTRA $DEB_GNOME || err=$?
-	fi
-
-	# hata yoksa çık
-	[ $err -ne 0 ] || break
-
-	cry "Bazı Deb paketlerin kurulumunda hata oluştu. " \
-	    "Tekrar denenerek kuruluma devam edilecek..."
-	try=$(($try - 1))
-done
+installdebs "Temel Deb paketleri kuruluyor" $DEB_BASE
+if ! anyattr server && anyattr gui fat; then
+	installdebs "Standart bir çalışma ortamı için gerekli Deb paketleri kuruluyor" \
+		$DEB_STANDARD $DEB_GNOME
+fi
+if anyattr fat; then
+	installdebs "Ekstra Deb paketleri kuruluyor" $DEB_EXTRA $DEB_GNOME 
+fi

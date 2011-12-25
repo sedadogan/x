@@ -74,7 +74,7 @@ if read best && [ -n "$best" ]; then
 		sed -ne "s!.* href=[\"']\(.*://.*/${basename}\).dsc.*!\1!p"
 	) 2>/dev/null && [ -n "$baseurl" ]; then
 		sudoattempt
-		if debinstall "${baseurl}_${ARCH}.deb"; then
+		if debinstallfromurl "${baseurl}_${ARCH}.deb"; then
 			cry "$package $version sürümüne yükseltildi."
 		else
 			cry "$package $version sürümüne yükseltilirken hatayla karşılaşıldı."

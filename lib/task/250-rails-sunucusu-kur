@@ -1,0 +1,19 @@
+#!/bin/bash
+
+GEM_BASE="
+rails
+"
+
+if anyattr gui; then
+	cry "Bu bir masaüstü sistem gibi görünüyor. " \
+	    "Böyle bir sisteme sunucu kurmamalısınız."
+	if ! yesno "Yine de devam edilsin mi?" h; then
+		cry "Güzel!"
+		exit
+	fi
+fi
+
+taskrun 2 genel-sunucu
+
+sudoattempt
+installgems "Rails Gem paketleri kuruluyor" $GEM_BASE

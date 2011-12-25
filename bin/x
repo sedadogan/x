@@ -750,8 +750,35 @@ xaptitude() {
 	sudo aptitude $command -f --quiet --assume-yes --allow-untrusted --without-recommends --safe-resolver "$@"
 }
 
+# Aptitude hata verdiğinde bir de APT ile dene
+aptitude_or_aptget() {
+	xaptitude "$@" || xaptget "$@"
+}
+
+# deb paketlerini hata halinde tekrar deneyerek kur
+installdebs() {
+	local message="$1"
+	shift ||:
+
+	say "${message}..."
+
+	local try=2
+	while [ $try -gt 0 ]; do
+		err=0
+
+		aptitude_or_aptget "$@" || err=$?
+
+		# hata yoksa çık
+		[ $err -ne 0 ] || break
+
+		cry "Bazı Deb paketlerinin kurulumunda hata oluştu. " \
+		    "Tekrar denenerek kuruluma devam edilecek..."
+		try=$(($try - 1))
+	done
+}
+
 # adresi verilen bir deb paketini indir ve kur
-debinstall() {
+debinstallfromurl() {
 	local url deb
 
 	url="$1"
@@ -813,6 +840,28 @@ xgem191() {
 	shift
 
 	sudo gem1.9.1 $command --quiet --force --no-ri --no-rdoc "$@"
+}
+
+# gem paketlerini hata halinde tekrar deneyerek kur
+installgems() {
+	local message="$1"
+	shift ||:
+
+	say "${message}..."
+
+	local try=2
+	while [ $try -gt 0 ]; do
+		err=0
+
+		xgem191 install "$@" || err=$?
+
+		# hata yoksa çık
+		[ $err -ne 0 ] || break
+
+		cry "Bazı Gem paketlerinin kurulumunda hata oluştu. " \
+		    "Tekrar denenerek kuruluma devam edilecek..."
+		try=$(($try - 1))
+	done
 }
 
 # verilen dizgilerin ilk harflerini büyüt
@@ -1198,6 +1247,18 @@ taskitems() {
 	[ -n "$1" ] || bug "Görev dosyası öneki tanımlanmamış"
 
 	prefix="$1"
+	shift ||:
+
+	if [ $# -ge 1 ]; then
+		local name="$1"
+		filteritems() {
+			ls ${1}/${prefix}* 2>/dev/null | egrep -s "$name" ||:
+		}
+	else
+		filteritems() {
+			ls ${1}/${prefix}* 2>/dev/null ||:
+		}
+	fi
 
 	IFS=:
 	path=($TASKLIB)
@@ -1207,7 +1268,7 @@ taskitems() {
 	declare -A seen
 
 	for p in ${path[@]}; do
-		for task in $(ls ${p}/${prefix}* 2>/dev/null ||:); do
+		for task in $(filteritems "$p"); do
 			case "$task" in
 			*\|*) bug "Hatalı görev dosyası adı: $task" ;;
 			esac
@@ -1370,6 +1431,16 @@ taskmenu() {
 		echo "exec:Yardım (F1)::x-tmux-man 19-x"
 		echo "exit:Çıkış (q veya Esc)"
 	} | pdmenu - --color
+}
+
+# verilen kategori ve isimdeki görevleri çalıştır
+taskrun() {
+	exportapi
+
+	taskitems "$@" |
+	while read item; do
+		dotask "$item" taskinvoke
+	done
 }
 
 # kurulum görevlerinin (0 ve 7 kategorileri) tümünü çalıştır

@@ -5,10 +5,13 @@ apache2-utils
 automysqlbackup
 ca-certificates
 dish
-etckeeper
 ethtool
+fail2ban
 ipcalc
 libexpat1
+libmysqlclient16
+libmysqlclient-dev
+libopenssl-ruby
 memcached
 mime-support
 mysql-client
@@ -17,24 +20,17 @@ nfs-server
 nginx-extras
 ntp
 p7zip
-php5-cgi
-php5-cli
-php5-curl
-php5-fpm
-php5-gd
-php5-imagick
-php5-mcrypt
-php5-memcache
-php5-mysql
-php5-sqlite
-php5-suhosin
-php5-xmlrpc
-php5-xsl
-php-apc
 pssh
+rsync
 sqlite3
 ssl-cert
 wwwconfig-common
+"
+
+GEM_BASE="
+mysql
+rack
+sqlite3-ruby
 "
 
 MYSQLCONFDIR=/etc/mysql/conf.d
@@ -50,32 +46,43 @@ fi
 
 sudoattempt
 
+# Debian'a özgü depoları ekle
+case "$(lsb_release -s -i 2>/dev/null ||:)" in
+[Dd]ebian)
+	# Backports deposu
+	distribution=$(lsb_release -s -c 2>/dev/null ||:)
+	if [ -n "$distribution" ]; then
+		adddebrepository \
+			"backports" \
+			"backports.debian.org/debian-backports" \
+			"${distribution}-backports" \
+			"main" ||:
+	fi
+	;;
+esac
+
+# Dotdeb deposu
+adddebrepository \
+	"dotdeb" \
+	"packages.dotdeb.org" \
+	- \
+	"all" \
+	"www.dotdeb.org/dotdeb.gpg" ||:
+
 if [ -z "$HAS_APT_UPDATED" ]; then
 	say "Paket indeksleri güncelleniyor..."
 	xaptitude update ||:
 fi
 
-try=2
-while [ $try -gt 0 ]; do
-	err=0
-
-	say "Gerekli Deb paketleri kuruluyor..."
-	xaptitude install $DEB_BASE || xaptget install $DEB_BASE || err=$?
-
-	# hata yoksa çık
-	[ $err -ne 0 ] || break
-
-	cry "Bazı Deb paketlerin kurulumunda hata oluştu. " \
-	    "Tekrar denenerek kuruluma devam edilecek..."
-	try=$(($try - 1))
-done
+installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE
+installgems "Gerekli Gem paketleri kuruluyor" $GEM_BASE
 
 # Türkçe dokunuşlar.
 if [ -d "$MYSQLCONFDIR" ]; then
 	# MySQL'de öntanımlı UTF-8 desteğine rağmen ortaya çıkan saçma sapan
 	# UTF-8 problemlerinden bıktık.
 	if ! [ -f $MYSQLCONFDIR/utf8.cnf ]; then
-		say "MySQL UTF-8 ayarları iyileştiriliyor..."
+		say "MySQL UTF-8 ayarları Türkçe'ye uygun hale getiriliyor..."
 		sudo sh <<-EOS
 			mkdir -p $MYSQLCONFDIR
 			cat >$MYSQLCONFDIR/utf8.cnf <<-'EOF'
