@@ -230,5 +230,5 @@ if ! anyattr server && anyattr gui fat; then
 		$DEB_STANDARD $DEB_GNOME
 fi
 if anyattr fat; then
-	installdebs "Ekstra Deb paketleri kuruluyor" $DEB_EXTRA $DEB_GNOME 
+	installdebs "Ekstra Deb paketleri kuruluyor" $DEB_EXTRA $DEB_GNOME
 fi

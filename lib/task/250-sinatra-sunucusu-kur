@@ -16,4 +16,4 @@ fi
 taskrun 2 genel-sunucu
 
 sudoattempt
-installgems "Rails Gem paketleri kuruluyor" $GEM_BASE
+installgems "Sinatra Gem paketleri kuruluyor" $GEM_BASE

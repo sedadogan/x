@@ -18,7 +18,7 @@ mime-support
 mysql-client
 mysql-server
 nfs-server
-nginx-extras
+nginx-full
 ntp
 p7zip
 pssh
@@ -32,6 +32,7 @@ GEM_BASE="
 mysql
 rack
 sqlite3
+thin
 "
 
 MYSQLCONFDIR=/etc/mysql/conf.d
