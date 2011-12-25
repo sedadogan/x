@@ -766,7 +766,7 @@ installdebs() {
 	while [ $try -gt 0 ]; do
 		err=0
 
-		aptitude_or_aptget "$@" || err=$?
+		aptitude_or_aptget install "$@" || err=$?
 
 		# hata yoksa çık
 		[ $err -ne 0 ] || break
@@ -807,6 +807,47 @@ debinstallfromurl() {
 	fi
 
 	return 1
+}
+
+# debian paket deposu ekle
+adddebrepository() {
+	local name repository distribution components keyurl
+
+	[ $# -ge 4 ] || bug "adddebrepository: argüman sayısı eksik"
+
+	name="$1"
+	repository="$2"
+	distribution="$3"
+	components="$4"
+	keyurl="$5"
+
+	case "$distribution" in
+	""|-) distribution=$(lsb_release -s -c 2>/dev/null ||:) ;;
+	esac
+	case "$components" in
+	""|-) components='main' ;;
+	esac
+	case "$repository" in
+	http:|ftp:) ;;
+	*) repository="http://${repository}" ;;
+	esac
+	case "$keyurl" in
+	http:|ftp:) ;;
+	"") ;;
+	*) keyurl="http://${keyurl}" ;;
+	esac
+
+	list=/etc/apt/sources.list.d/$name.list
+	if [ ! -f "$list" ]; then
+		sudoattempt
+		sudo sh -c "cat >$list <<EOF
+deb $repository $distribution $components
+EOF
+"
+		if [ -n "$keyurl" ]; then
+			wget "$keyurl" -qO- | sudo apt-key add -
+		fi
+	fi
 }
 
 # wajig sarmalayıcı
@@ -862,47 +903,6 @@ installgems() {
 		    "Tekrar denenerek kuruluma devam edilecek..."
 		try=$(($try - 1))
 	done
-}
-
-# debian paket deposu ekle
-adddebrepository() {
-	local name repository distribution components keyurl
-
-	[ $# -ge 4 ] || bug "adddebrepository: argüman sayısı eksik"
-
-	name="$1"
-	repository="$2"
-	distribution="$3"
-	components="$4"
-	keyurl="$5"
-
-	case "$distribution" in
-	""|-) distribution=$(lsb_release -s -c 2>/dev/null ||:) ;;
-	esac
-	case "$components" in
-	""|-) components='main' ;;
-	esac
-	case "$repository" in
-	http:|ftp:) ;;
-	*) repository="http://${repository}" ;;
-	esac
-	case "$keyurl" in
-	http:|ftp:) ;;
-	"") ;;
-	*) keyurl="http://${keyurl}" ;;
-	esac
-
-	list=/etc/apt/sources.list.d/$name.list
-	if [ ! -f "$list" ]; then
-		sudoattempt
-		sudo sh -c "cat >$list <<EOF
-deb $repository $distribution $components
-EOF
-"
-		if [ -n "$keyurl" ]; then
-			wget "$keyurl" -qO- | sudo apt-key add -
-		fi
-	fi
 }
 
 # verilen dizgilerin ilk harflerini büyüt

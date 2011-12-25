@@ -12,6 +12,7 @@ libexpat1
 libmysqlclient16
 libmysqlclient-dev
 libopenssl-ruby
+libsqlite3-dev
 memcached
 mime-support
 mysql-client
