@@ -1,3 +1,6 @@
+# Dikkat! Alias'lar için tamamlama özelliği isteniyorsa make_completion_wrapper
+# işlevini (örneklerde görüldüğü gibi) kullanın.
+
 # "ls" için renk desteğini etkinleştir.
 [ -x /usr/bin/dircolors ] && [ -r ~/.dircolors ] &&
 	eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -41,13 +44,19 @@ alias cd..='cd ..'
 alias cd...='cd ../..'
 alias cd-='cd -'
 
-# Debian'a özgü kısayollar.
-alias api='apt-iselect'
-alias apt='sudo apt-get install'
-alias apu='sudo apt-get update'
-alias apk='~sudo /bin/apt-key-add'
-alias apc='apt-cache'
-alias aps='apt-get source'
+# APT için tamamlama işlevlerini hazırla.
+make_completion_wrapper _apt_cache _apt_cache_show apt-cache show
+make_completion_wrapper _apt_get   _apt_get_install apt-get install
+make_completion_wrapper _apt_get   _apt_get_update apt-get update
+make_completion_wrapper _apt_get   _apt_get_source apt-get source
+# APT kısayolları.
+alias apc='apt-cache';            complete -F _apt_cache apc
+alias api='apt-iselect';          complete -F _apt_cache_show api
+alias apk='sudo apt-key add'
+alias aps='apt-get source';       complete -F _apt_get_source aps
+alias apt='sudo apt-get install'; complete -F _apt_get_install apt
+alias apu='sudo apt-get update';  complete -F _apt_get_update apu
+alias apw='apt-cache show';       complete -F _apt_cache_show apw
 
 # Git.
 if hascommand hub && hascommand ruby; then
@@ -60,7 +69,7 @@ fi
 complete -o default -o nospace -F _git g
 # 'h' henüz olgunlaşmamış projeler için kısayol
 alias h='git commit -a -m hmm'
-alias gbp='git-buildpackage'
+alias gbp='git-buildpackage';     complete -F _git_buildpackage gbp
 
 # Youtube'den ses dosyası indir.
 alias yt="youtube-dl -o '%(title)s.%(ext)s' --extract-audio --audio-format=mp3"
