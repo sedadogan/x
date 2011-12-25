@@ -31,5 +31,5 @@ if [ -z "$BASH_COMPLETION" ] && [ -f /etc/bash_completion ] && ! shopt -oq posix
                 }"
         }
 else
-        make_completion_wrapper() { : }
+        make_completion_wrapper() { :; }
 fi
