@@ -207,9 +207,16 @@ fi
 
 sudoattempt
 
-if [ -z "$HAS_APT_UPDATED" ]; then
+# 19 paket deposunu ekle.
+say "19 paket deposu (yoksa) ekleniyor..."
+if adddebrepository \
+	"19" \
+	"http://deb.ondokuz.biz" \
+	"sid" \
+	"main contrib non-free" \
+	"deb.ondokuz.biz/archive.key"; then
 	say "Paket indeksleri güncelleniyor..."
-	xaptitude update ||:
+	xaptget update ||:
 fi
 
 # XXX  Bu bir hek.  Apt/Aptitude müdahalesiz çalıştırılacak.  Bu araçlar fazla

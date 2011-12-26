@@ -845,9 +845,14 @@ deb $repository $distribution $components
 EOF
 "
 		if [ -n "$keyurl" ]; then
-			wget "$keyurl" -qO- | sudo apt-key add -
+			wget "$keyurl" -qO- 2>/dev/null | sudo apt-key add - ||:
 		fi
+
+		# indeks güncellemesi gerekiyor
+		return 0
 	fi
+
+	return 1
 }
 
 # wajig sarmalayıcı
@@ -1610,21 +1615,6 @@ go() {
 			exit 0
 		fi
 	fi
-
-	# 10 paket deposunu ekle.
-	sudoattempt
-
-	say "19 paket deposu (yoksa) ekleniyor..."
-	adddebrepository \
-		"19" \
-		"http://deb.ondokuz.biz" \
-		"sid" \
-		"main contrib non-free" \
-		"deb.ondokuz.biz/archive.key" ||:
-
-	say "Paket indeksleri güncelleniyor..."
-	xaptget update ||:
-	HAS_APT_UPDATED=yes
 
 	# ---------------------------------------------------------------------
 	# GitHub bilgisi topla

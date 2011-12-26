@@ -536,21 +536,6 @@ go() {
 		fi
 	fi
 
-	# 10 paket deposunu ekle.
-	sudoattempt
-
-	say "19 paket deposu (yoksa) ekleniyor..."
-	adddebrepository \
-		"19" \
-		"http://deb.ondokuz.biz" \
-		"sid" \
-		"main contrib non-free" \
-		"deb.ondokuz.biz/archive.key" ||:
-
-	say "Paket indeksleri güncelleniyor..."
-	xaptget update ||:
-	HAS_APT_UPDATED=yes
-
 	# ---------------------------------------------------------------------
 	# GitHub bilgisi topla
 	# ---------------------------------------------------------------------

@@ -120,9 +120,14 @@ deb $repository $distribution $components
 EOF
 "
 		if [ -n "$keyurl" ]; then
-			wget "$keyurl" -qO- | sudo apt-key add -
+			wget "$keyurl" -qO- 2>/dev/null | sudo apt-key add - ||:
 		fi
+
+		# indeks güncellemesi gerekiyor
+		return 0
 	fi
+
+	return 1
 }
 
 # wajig sarmalayıcı

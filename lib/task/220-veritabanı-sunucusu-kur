@@ -28,6 +28,7 @@ fi
 sudoattempt
 
 # Debian'a özgü depoları ekle
+added=2
 case "$(lsb_release -s -i 2>/dev/null ||:)" in
 [Dd]ebian)
 	# Backports deposu
@@ -37,7 +38,9 @@ case "$(lsb_release -s -i 2>/dev/null ||:)" in
 			"backports" \
 			"backports.debian.org/debian-backports" \
 			"${distribution}-backports" \
-			"main" ||:
+			"main" || let added--
+	else
+		let added--
 	fi
 	# Dotdeb deposu
 	adddebrepository \
@@ -45,11 +48,11 @@ case "$(lsb_release -s -i 2>/dev/null ||:)" in
 		"packages.dotdeb.org" \
 		- \
 		"all" \
-		"www.dotdeb.org/dotdeb.gpg" ||:
+		"www.dotdeb.org/dotdeb.gpg" || let added--
 	;;
 esac
 
-if [ -z "$HAS_APT_UPDATED" ]; then
+if [ $added -gt 0 ] || [ -z "$HAS_APT_UPDATED" ]; then
 	say "Paket indeksleri güncelleniyor..."
 	xaptitude update ||:
 fi
