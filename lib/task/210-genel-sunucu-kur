@@ -124,7 +124,7 @@ while [ ! -f "$INITFILE" ]; do
 
 	[ -n "$DAEMON" ] || break
 
-	cat >$INITFILE <<-EOF
+	sudo sh -c "sed -e 's/^\t//' >$INITFILE" <<EOF
 		#!/bin/sh
 		### BEGIN INIT INFO
 		# Provides:          thin
@@ -163,13 +163,14 @@ while [ ! -f "$INITFILE" ]; do
 			exit 3
 			;;
 		esac
-	EOF
+EOF
 
-	mkdir -p $CONFDIR
+	sudo mkdir -p $CONFDIR
 	cry "Thin uygulama sunucusu yapılandırmaları '$CONFDIR'" \
 	    "dizininde tutulacak.  Lütfen yapılandırmaları bu dizinde" \
 	    "oluşturarak uygulama sunucusunu şu şekilde başlatın:"
 	    "	service $NAME start"
+	break
 done
 
 #-------------------------------------------------------------------------------
@@ -181,7 +182,7 @@ NGINXDIR=/etc/nginx
 
 conffile=$NGINXDIR/common.conf
 if [ ! -f "$conffile" ]; then
-	cat >$conffile <<-'EOF'
+	sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
 		# öntanımlı indeksler
 		index index.html index.htm index.php;
 
@@ -250,11 +251,11 @@ if [ ! -f "$conffile" ]; then
 			fastcgi_param GEOIP_COUNTRY_NAME $geoip_country_name;
 			include fastcgi_params;
 		}
-	EOF
+EOF
 fi
 conffile=$NGINXDIR/app.conf
 if [ ! -f "$conffile" ]; then
-	cat >$conffile <<-'EOF'
+	sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
 		location / {
 			proxy_set_header  X-Real-IP  $remote_addr;
 			proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -274,10 +275,10 @@ if [ ! -f "$conffile" ]; then
 				break;
 			}
 		}
-	EOF
+EOF
 fi
 conffile=$NGINXDIR/sites-avaliable/default
-cat >$conffile <<-'EOF'
+sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
 	# uygulama sunucusu
 	upstream appserver {
 		server 0.0.0.0:3000;
@@ -308,6 +309,7 @@ cat >$conffile <<-'EOF'
 		include app.conf
 	}
 EOF
-( cd $NGINXDIR/sites-enabled; ln -sf ../sites-avaliable/default; )
+cd $NGINXDIR/sites-enabled; sudo ln -sf ../sites-avaliable/default
+
 cry "Nginx için $NGINXDIR/sites-enabled/default örnek yapılandırması" \
     "oluşturuldu; lütfen yapılandırmayı tamamlayın."
