@@ -35,8 +35,6 @@ sqlite3
 thin
 "
 
-MYSQLCONFDIR=/etc/mysql/conf.d
-
 if anyattr gui; then
 	cry "Bu bir masaüstü sistem gibi görünüyor. " \
 	    "Böyle bir sisteme sunucu kurmamalısınız."
@@ -79,6 +77,12 @@ fi
 installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE
 installgems "Gerekli Gem paketleri kuruluyor" $GEM_BASE
 
+# ------------------------------------------------------------------------------
+# Mysql ayarları
+# ------------------------------------------------------------------------------
+
+MYSQLCONFDIR=/etc/mysql/conf.d
+
 # Türkçe dokunuşlar.
 if [ -d "$MYSQLCONFDIR" ]; then
 	# MySQL'de öntanımlı UTF-8 desteğine rağmen ortaya çıkan saçma sapan
@@ -99,3 +103,211 @@ if [ -d "$MYSQLCONFDIR" ]; then
 		EOS
 	fi
 fi
+
+#-------------------------------------------------------------------------------
+# Thin servis betiği
+#-------------------------------------------------------------------------------
+
+NAME=thin
+INITFILE=/etc/init.d/$NAME
+CONFDIR=/etc/$NAME
+while [ ! -f "$INITFILE" ]; do
+	DAEMON=
+	for v in "1.9.1" ""; do
+		for d in /usr/local/bin /var/lib/gems/1.9.1/bin; do
+			if [ -x "${d}/${NAME}${v}" ]; then
+				DAEMON="${d}/${NAME}${v}"
+				break
+			fi
+		done
+	done
+
+	[ -n "$DAEMON" ] || break
+
+	cat >$INITFILE <<-EOF
+		#!/bin/sh
+		### BEGIN INIT INFO
+		# Provides:          thin
+		# Required-Start:    \$local_fs \$remote_fs
+		# Required-Stop:     \$local_fs \$remote_fs
+		# Default-Start:     2 3 4 5
+		# Default-Stop:      0 1 6
+		# Short-Description: thin initscript
+		# Description:       thin
+		### END INIT INFO
+
+		# Original author: Forrest Robertson
+		# Modified by: Recai Oktaş
+
+		# Do NOT "set -e"
+
+		DAEMON=$DAEMON
+		NAME=$NAME
+		CONFDIR=$CONFDIR
+
+		# Exit if the package is not installed
+		[ -x "\$DAEMON" ] || exit 0
+
+		case "\$1" in
+		start)
+			\$DAEMON start --all \$CONFDIR
+			;;
+		stop)
+			\$DAEMON stop --all \$CONFDIR
+			;;
+		restart|force-reload|reload)
+			\$DAEMON restart --all \$CONFDIR
+			;;
+		*)
+			echo "Usage: service \$NAME {start|stop|restart}" >&2
+			exit 3
+			;;
+		esac
+	EOF
+
+	mkdir -p $CONFDIR
+	cry "Thin uygulama sunucusu yapılandırmaları '$CONFDIR'" \
+	    "dizininde tutulacak.  Lütfen yapılandırmaları bu dizinde" \
+	    "oluşturarak uygulama sunucusunu şu şekilde başlatın:"
+	    "	service $NAME start"
+done
+
+#-------------------------------------------------------------------------------
+# Nginx yapılandırması için şablonlar
+#-------------------------------------------------------------------------------
+
+NGINXDIR=/etc/nginx
+[ -d "$NGINXDIR" ] || die "Nginx kurulu görünmüyor"
+
+conffile=$NGINXDIR/common.conf
+if [ ! -f "$conffile" ]; then
+	cat >$conffile <<-'EOF'
+		# öntanımlı indeksler
+		index index.html index.htm index.php;
+
+		# flv dosyalarında flv modülü etkin
+		location ~ \.flv$ {
+			flv;
+		}
+
+		# logları kirleten bazı botları reddet
+		if ($http_user_agent ~* (Baiduspider|Morfeus\ strikes)) {
+			return 444;
+		}
+
+		# nokta dosyalar daima gizli olmalı
+		location ~ /\. {
+			deny all;
+		}
+
+		# logları kirleten script-kiddie istekleri
+		location ~* /(phpmyadmin|php-my-admin)/ {
+			deny all;
+		}
+
+		# sahte refererları reddet
+		if ($http_referer ~* (babes|click|diamond|forsale|girl|jewelry|love|nudit|organic|poker|porn|poweroversoftware|sex|teen|video|webcam|zippo)) {
+			return 444;
+		}
+
+		# bakım kipi - kök dizinde .503 dosyası varsa sistem bakımda
+		if ( -f $document_root/.503) {
+			return 503;
+		}
+
+		# robot dosyası yoksa logları kirletme
+		location = /robots.txt {
+			log_not_found off;
+		}
+
+		# debian paket deposu sunuyorsak loglar kirlenmesin
+		location ~ /debian/.*(/i18n/Translation-|\.diff/Index).*$ {
+			log_not_found off;
+		}
+
+		# standart www yönlendirmesi
+		if ($host ~* www\.(.*)) {
+			set $x_host_without_www $1;
+			rewrite ^(.*)$ http://$x_host_without_www$1 permanent;
+		}
+
+		# ssl hazırlığı
+		set $x_https "off";
+		if ($http_x_forwarded_proto = "https") {
+			set $x_https "on";
+		}
+		if ($server_port = "443") {
+			set $x_https "on";
+		}
+
+		# php hangi dosyalarda etkin?
+		location ~ \.(php|phtml)$ {
+			fastcgi_pass 127.0.0.1:9000;
+			fastcgi_index index.php;
+			fastcgi_param SCRIPT_FILENAME $request_filename;
+			fastcgi_param  HTTPS $x_https;
+			fastcgi_param GEOIP_COUNTRY_CODE $geoip_country_code;
+			fastcgi_param GEOIP_COUNTRY_NAME $geoip_country_name;
+			include fastcgi_params;
+		}
+	EOF
+fi
+conffile=$NGINXDIR/app.conf
+if [ ! -f "$conffile" ]; then
+	cat >$conffile <<-'EOF'
+		location / {
+			proxy_set_header  X-Real-IP  $remote_addr;
+			proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
+
+			if (-f $request_filename/index.html) {
+				rewrite (.*) $1/index.html break;
+			}
+
+			if (-f $request_filename.html) {
+				rewrite (.*) $1.html break;
+			}
+
+			if (!-f $request_filename) {
+				proxy_pass http://foo;
+				break;
+			}
+		}
+	EOF
+fi
+conffile=$NGINXDIR/sites-avaliable/default
+cat >$conffile <<-'EOF'
+	# uygulama sunucusu
+	upstream appserver {
+		server 0.0.0.0:3000;
+		server 0.0.0.0:3001;
+	}
+	server {
+		listen 80;
+		# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
+		# 	server_name .foo.bar.baz
+		server_name localhost;
+		root /srv/www/$host/site/public;
+
+		include common.conf
+		include app.conf
+	}
+	server {
+		listen 443;
+		# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
+		# 	server_name .foo.bar.baz
+		server_name localhost;
+		root /srv/www/$host/site/public;
+
+		ssl on;
+		# ssl_certificate /etc/ssl/private/site.crt;
+		# ssl_certificate_key /etc/ssl/private/site.key;
+
+		include common.conf
+		include app.conf
+	}
+EOF
+( cd $NGINXDIR/sites-enabled; ln -sf ../sites-avaliable/default; )
+cry "Nginx için $NGINXDIR/sites-enabled/default örnek yapılandırması" \
+    "oluşturuldu; lütfen yapılandırmayı tamamlayın."
