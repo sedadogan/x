@@ -168,7 +168,7 @@ EOF
 	sudo mkdir -p $CONFDIR
 	cry "Thin uygulama sunucusu yapılandırmaları '$CONFDIR'" \
 	    "dizininde tutulacak.  Lütfen yapılandırmaları bu dizinde" \
-	    "oluşturarak uygulama sunucusunu şu şekilde başlatın:"
+	    "oluşturarak uygulama sunucusunu şu şekilde başlatın:" \
 	    "	service $NAME start"
 	break
 done
@@ -277,7 +277,7 @@ if [ ! -f "$conffile" ]; then
 		}
 EOF
 fi
-conffile=$NGINXDIR/sites-avaliable/default
+conffile=$NGINXDIR/sites-available/default
 sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
 	# uygulama sunucusu
 	upstream appserver {
@@ -309,7 +309,7 @@ sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
 		include app.conf
 	}
 EOF
-cd $NGINXDIR/sites-enabled; sudo ln -sf ../sites-avaliable/default
+cd $NGINXDIR/sites-enabled; sudo ln -sf ../sites-available/default
 
 cry "Nginx için $NGINXDIR/sites-enabled/default örnek yapılandırması" \
     "oluşturuldu; lütfen yapılandırmayı tamamlayın."
