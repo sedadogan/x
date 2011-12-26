@@ -9,9 +9,8 @@ ethtool
 fail2ban
 ipcalc
 libexpat1
-libmysqlclient16
-libmysqlclient-dev
 libopenssl-ruby
+libmysql-ruby1.9.1
 libsqlite3-dev
 memcached
 mime-support
@@ -29,7 +28,6 @@ wwwconfig-common
 "
 
 GEM_BASE="
-mysql
 rack
 sqlite3
 thin
@@ -109,9 +107,10 @@ fi
 #-------------------------------------------------------------------------------
 
 NAME=thin
-INITFILE=/etc/init.d/$NAME
 CONFDIR=/etc/$NAME
-while [ ! -f "$INITFILE" ]; do
+
+conffile=/etc/init.d/$NAME
+while [ ! -f "$conffile" ]; do
 	DAEMON=
 	for v in "1.9.1" ""; do
 		for d in /usr/local/bin /var/lib/gems/1.9.1/bin; do
@@ -124,7 +123,7 @@ while [ ! -f "$INITFILE" ]; do
 
 	[ -n "$DAEMON" ] || break
 
-	sudo sh -c "sed -e 's/^\t//' >$INITFILE" <<EOF
+	sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<EOF
 		#!/bin/sh
 		### BEGIN INIT INFO
 		# Provides:          thin
@@ -165,11 +164,11 @@ while [ ! -f "$INITFILE" ]; do
 		esac
 EOF
 
+	sudo update-rc.d $NAME defaults
 	sudo mkdir -p $CONFDIR
 	cry "Thin uygulama sunucusu yapılandırmaları '$CONFDIR'" \
 	    "dizininde tutulacak.  Lütfen yapılandırmaları bu dizinde" \
-	    "oluşturarak uygulama sunucusunu şu şekilde başlatın:" \
-	    "	service $NAME start"
+	    "oluşturarak uygulama sunucusunu başlatın: service $NAME start"
 	break
 done
 
@@ -182,7 +181,7 @@ NGINXDIR=/etc/nginx
 
 conffile=$NGINXDIR/common.conf
 if [ ! -f "$conffile" ]; then
-	sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
+	sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 		# öntanımlı indeksler
 		index index.html index.htm index.php;
 
@@ -255,7 +254,7 @@ EOF
 fi
 conffile=$NGINXDIR/app.conf
 if [ ! -f "$conffile" ]; then
-	sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
+	sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 		location / {
 			proxy_set_header  X-Real-IP  $remote_addr;
 			proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -278,36 +277,36 @@ if [ ! -f "$conffile" ]; then
 EOF
 fi
 conffile=$NGINXDIR/sites-available/default
-sudo sh -c "sed -e 's/^\t//' >$conffile" <<'EOF'
-	# uygulama sunucusu
-	upstream appserver {
-		server 0.0.0.0:3000;
-		server 0.0.0.0:3001;
-	}
-	server {
-		listen 80;
-		# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
-		# 	server_name .foo.bar.baz
-		server_name localhost;
-		root /srv/www/$host/site/public;
+sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
+		# uygulama sunucusu
+		upstream appserver {
+			server 0.0.0.0:3000;
+			server 0.0.0.0:3001;
+		}
+		server {
+			listen 80;
+			# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
+			# 	server_name .foo.bar.baz
+			server_name localhost;
+			root /srv/www/$host/site/public;
 
-		include common.conf
-		include app.conf
-	}
-	server {
-		listen 443;
-		# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
-		# 	server_name .foo.bar.baz
-		server_name localhost;
-		root /srv/www/$host/site/public;
+			include common.conf
+			include app.conf
+		}
+		server {
+			listen 443;
+			# http://foo.bar.baz formunda bir servis için şu şekilde yapılandırın:
+			# 	server_name .foo.bar.baz
+			server_name localhost;
+			root /srv/www/$host/site/public;
 
-		ssl on;
-		# ssl_certificate /etc/ssl/private/site.crt;
-		# ssl_certificate_key /etc/ssl/private/site.key;
+			ssl on;
+			# ssl_certificate /etc/ssl/private/site.crt;
+			# ssl_certificate_key /etc/ssl/private/site.key;
 
-		include common.conf
-		include app.conf
-	}
+			include common.conf
+			include app.conf
+		}
 EOF
 cd $NGINXDIR/sites-enabled; sudo ln -sf ../sites-available/default
 
