@@ -187,11 +187,6 @@ if [ ! -f "$conffile" ]; then
 		# öntanımlı indeksler
 		index index.html index.htm index.php;
 
-		# flv dosyalarında flv modülü etkin
-		location ~ \.flv$ {
-			flv;
-		}
-
 		# logları kirleten bazı botları reddet
 		if ($http_user_agent ~* (Baiduspider|Morfeus\ strikes)) {
 			return 444;
@@ -272,7 +267,7 @@ if [ ! -f "$conffile" ]; then
 			}
 
 			if (!-f $request_filename) {
-				proxy_pass http://foo;
+				proxy_pass http://appserver;
 				break;
 			}
 		}
@@ -283,7 +278,6 @@ sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 		# uygulama sunucusu
 		upstream appserver {
 			server 0.0.0.0:3000;
-			server 0.0.0.0:3001;
 		}
 		server {
 			listen 80;
@@ -292,8 +286,8 @@ sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 			server_name localhost;
 			root /srv/www/$host/site/public;
 
-			include common.conf
-			include app.conf
+			include common.conf;
+			include app.conf;
 		}
 		server {
 			listen 443;
@@ -302,12 +296,12 @@ sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 			server_name localhost;
 			root /srv/www/$host/site/public;
 
-			ssl on;
+			# ssl on;
 			# ssl_certificate /etc/ssl/private/site.crt;
 			# ssl_certificate_key /etc/ssl/private/site.key;
 
-			include common.conf
-			include app.conf
+			include common.conf;
+			include app.conf;
 		}
 EOF
 sudo sh <<-EOS
