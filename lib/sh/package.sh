@@ -103,11 +103,11 @@ adddebrepository() {
 	""|-) components='main' ;;
 	esac
 	case "$repository" in
-	http:|ftp:) ;;
+	http:*|ftp:*) ;;
 	*) repository="http://${repository}" ;;
 	esac
 	case "$keyurl" in
-	http:|ftp:) ;;
+	http:*|ftp:*) ;;
 	"") ;;
 	*) keyurl="http://${keyurl}" ;;
 	esac

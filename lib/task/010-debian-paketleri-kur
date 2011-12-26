@@ -211,7 +211,7 @@ sudoattempt
 say "19 paket deposu (yoksa) ekleniyor..."
 if adddebrepository \
 	"19" \
-	"http://deb.ondokuz.biz" \
+	"deb.ondokuz.biz" \
 	"sid" \
 	"main contrib non-free" \
 	"deb.ondokuz.biz/archive.key"; then
