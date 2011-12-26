@@ -1,0 +1,85 @@
+#!/bin/bash
+
+DEB_BASE="
+automysqlbackup
+libmysqlclient-dev
+libsqlite3-dev
+mysql-client
+mysql-server
+sqlite3
+wwwconfig-common
+"
+
+GEM_BASE="
+mysql2
+activerecord
+sqlite3
+"
+
+if anyattr gui; then
+	cry "Bu bir masaüstü sistem gibi görünüyor. " \
+	    "Böyle bir sisteme sunucu kurmamalısınız."
+	if ! yesno "Yine de devam edilsin mi?" h; then
+		cry "Güzel!"
+		exit
+	fi
+fi
+
+sudoattempt
+
+# Debian'a özgü depoları ekle
+case "$(lsb_release -s -i 2>/dev/null ||:)" in
+[Dd]ebian)
+	# Backports deposu
+	distribution=$(lsb_release -s -c 2>/dev/null ||:)
+	if [ -n "$distribution" ]; then
+		adddebrepository \
+			"backports" \
+			"backports.debian.org/debian-backports" \
+			"${distribution}-backports" \
+			"main" ||:
+	fi
+	# Dotdeb deposu
+	adddebrepository \
+		"dotdeb" \
+		"packages.dotdeb.org" \
+		- \
+		"all" \
+		"www.dotdeb.org/dotdeb.gpg" ||:
+	;;
+esac
+
+if [ -z "$HAS_APT_UPDATED" ]; then
+	say "Paket indeksleri güncelleniyor..."
+	xaptitude update ||:
+fi
+
+installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE
+installgems "Gerekli Gem paketleri kuruluyor" $GEM_BASE
+
+# ------------------------------------------------------------------------------
+# Mysql ayarları
+# ------------------------------------------------------------------------------
+
+MYSQLCONFDIR=/etc/mysql/conf.d
+
+# Türkçe dokunuşlar.
+if [ -d "$MYSQLCONFDIR" ]; then
+	# MySQL'de öntanımlı UTF-8 desteğine rağmen ortaya çıkan saçma sapan
+	# UTF-8 problemlerinden bıktık.
+	if ! [ -f $MYSQLCONFDIR/utf8.cnf ]; then
+		say "MySQL UTF-8 ayarları Türkçe'ye uygun hale getiriliyor..."
+		sudo sh <<-EOS
+			mkdir -p $MYSQLCONFDIR
+			cat >$MYSQLCONFDIR/utf8.cnf <<-'EOF'
+				[mysqld]
+				init_connect='SET collation_connection = utf8_general_ci'
+				init_connect='SET NAMES utf8'
+				default-character-set=utf8
+				character-set-server=utf8
+				collation-server=utf8_general_ci
+				skip-character-set-client-handshake
+			EOF
+		EOS
+	fi
+fi

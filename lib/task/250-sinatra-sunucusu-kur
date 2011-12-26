@@ -13,7 +13,7 @@ if anyattr gui; then
 	fi
 fi
 
-taskrun 2 genel-sunucu
+taskrun 2 veritabanı-sunucusu
 
 sudoattempt
 installgems "Sinatra Gem paketleri kuruluyor" $GEM_BASE

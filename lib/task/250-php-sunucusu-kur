@@ -27,6 +27,7 @@ if anyattr gui; then
 fi
 
 taskrun 2 genel-sunucu
+taskrun 2 veritabanı-sunucusu
 
 sudoattempt
 installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE

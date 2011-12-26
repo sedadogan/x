@@ -2,7 +2,6 @@
 
 DEB_BASE="
 apache2-utils
-automysqlbackup
 ca-certificates
 dish
 ethtool
@@ -10,26 +9,19 @@ fail2ban
 ipcalc
 libexpat1
 libopenssl-ruby
-libmysql-ruby1.9.1
-libsqlite3-dev
 memcached
 mime-support
-mysql-client
-mysql-server
-nfs-server
 nginx-full
 ntp
 p7zip
 pssh
 rsync
-sqlite3
 ssl-cert
 wwwconfig-common
 "
 
 GEM_BASE="
 rack
-sqlite3
 thin
 "
 
@@ -56,16 +48,16 @@ case "$(lsb_release -s -i 2>/dev/null ||:)" in
 			"${distribution}-backports" \
 			"main" ||:
 	fi
+	# Dotdeb deposu
+	adddebrepository \
+		"dotdeb" \
+		"packages.dotdeb.org" \
+		- \
+		"all" \
+		"www.dotdeb.org/dotdeb.gpg" ||:
 	;;
 esac
 
-# Dotdeb deposu
-adddebrepository \
-	"dotdeb" \
-	"packages.dotdeb.org" \
-	- \
-	"all" \
-	"www.dotdeb.org/dotdeb.gpg" ||:
 
 if [ -z "$HAS_APT_UPDATED" ]; then
 	say "Paket indeksleri güncelleniyor..."
@@ -74,33 +66,6 @@ fi
 
 installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE
 installgems "Gerekli Gem paketleri kuruluyor" $GEM_BASE
-
-# ------------------------------------------------------------------------------
-# Mysql ayarları
-# ------------------------------------------------------------------------------
-
-MYSQLCONFDIR=/etc/mysql/conf.d
-
-# Türkçe dokunuşlar.
-if [ -d "$MYSQLCONFDIR" ]; then
-	# MySQL'de öntanımlı UTF-8 desteğine rağmen ortaya çıkan saçma sapan
-	# UTF-8 problemlerinden bıktık.
-	if ! [ -f $MYSQLCONFDIR/utf8.cnf ]; then
-		say "MySQL UTF-8 ayarları Türkçe'ye uygun hale getiriliyor..."
-		sudo sh <<-EOS
-			mkdir -p $MYSQLCONFDIR
-			cat >$MYSQLCONFDIR/utf8.cnf <<-'EOF'
-				[mysqld]
-				init_connect='SET collation_connection = utf8_general_ci'
-				init_connect='SET NAMES utf8'
-				default-character-set=utf8
-				character-set-server=utf8
-				collation-server=utf8_general_ci
-				skip-character-set-client-handshake
-			EOF
-		EOS
-	fi
-fi
 
 #-------------------------------------------------------------------------------
 # Thin servis betiği
