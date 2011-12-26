@@ -163,9 +163,11 @@ while [ ! -f "$conffile" ]; do
 			;;
 		esac
 EOF
-
-	sudo update-rc.d $NAME defaults
-	sudo mkdir -p $CONFDIR
+	sudo sh <<-EOS
+		chmod +x $conffile
+		update-rc.d $NAME defaults
+		mkdir -p $CONFDIR
+	EOS
 	cry "Thin uygulama sunucusu yapılandırmaları '$CONFDIR'" \
 	    "dizininde tutulacak.  Lütfen yapılandırmaları bu dizinde" \
 	    "oluşturarak uygulama sunucusunu başlatın: service $NAME start"
@@ -308,7 +310,10 @@ sudo sh -c "sed -e 's/^\t\t//' >$conffile" <<'EOF'
 			include app.conf
 		}
 EOF
-cd $NGINXDIR/sites-enabled; sudo ln -sf ../sites-available/default
+sudo sh <<-EOS
+	cd $NGINXDIR/sites-enabled
+	ln -sf ../sites-available/default
+EOS
 
 cry "Nginx için $NGINXDIR/sites-enabled/default örnek yapılandırması" \
     "oluşturuldu; lütfen yapılandırmayı tamamlayın."
