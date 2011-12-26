@@ -4,6 +4,7 @@ DEB_BASE="
 automysqlbackup
 libmysqlclient-dev
 libsqlite3-dev
+libssl-dev
 mysql-client
 mysql-server
 sqlite3
@@ -78,7 +79,6 @@ if [ -d "$MYSQLCONFDIR" ]; then
 				[mysqld]
 				init_connect='SET collation_connection = utf8_general_ci'
 				init_connect='SET NAMES utf8'
-				default-character-set=utf8
 				character-set-server=utf8
 				collation-server=utf8_general_ci
 				skip-character-set-client-handshake
