@@ -44,7 +44,7 @@ fi
 # Önce boş bir token dosyası oluştur
 touchsafe "$TOKENFILE"
 
-if [ -z "$GITHUB_TOKEN" ] && anyattr gui && hascommand xclip; then
+if [ -z "$GITHUB_TOKEN" ] && anyattr gui && [ -n "$DISPLAY" ] && hascommand xclip; then
 	cry "GitHub API token değeri kaydedilecek..."
 
 	cat <<-EOT

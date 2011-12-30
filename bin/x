@@ -58,6 +58,7 @@ aptitude
 curl
 git
 pdmenu
+sudo
 "
 
 # ==============================================================================
@@ -1570,6 +1571,13 @@ go() {
 		fi
 	done
 	if [ -n "$missing" ]; then
+		case "$missing" in
+		*sudo*)
+			die "sudo paketi kurulu gözükmüyor. " \
+			    "Lütfen önce bu paketi elle kurun."
+			;;
+		esac
+
 		say "'$(echo $missing)' paket(ler)i kurulu değil. " \
 		    "Önce bunlar kurulacak."
 
