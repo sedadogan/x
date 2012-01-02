@@ -1,7 +1,7 @@
 # Kişisel Ayarlar
 
 # Posta kutusu olmayanları işaretle
-unmailboxes +msgid.cache +Archive +admin +temp +junk +spam +bogus "+All Mail"
+unmailboxes +msgid.cache +Archive +temp +junk +spam +bogus "+All Mail"
 
 # Posta listelerini ayrı ayrı tanımla.
 #lists bilen@bir.adres, forum@bir.adres
