@@ -30,7 +30,7 @@ type = Gmail
 foldersort = mycmp
 maxconnections = 1
 realdelete = no
-folderfilter = lambda foldername: not re.search('([Tt]rash$|All Mail$|[Ss]pam|duplicates|junk|admin|msgid|lock|Tüm Postalar|Çöp kutusu)'.decode('utf-8').encode('imap4-utf-7'), foldername)
+folderfilter = lambda foldername: not re.search('([Tt]rash$|All Mail$|[Ss]pam|duplicates|junk|msgid|lock|Tüm Postalar|Çöp kutusu)'.decode('utf-8').encode('imap4-utf-7'), foldername)
 nametrans = lambda foldername: re.sub('^\[Gmail\].', '', re.sub('INBOX', 'Gelen Kutusu', foldername.decode('imap4-utf-7').encode('utf-8')))
 
 # ------------------------------------------------------------------------------
