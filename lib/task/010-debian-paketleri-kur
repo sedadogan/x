@@ -79,6 +79,7 @@ leafpad
 liblocale-ruby1.8
 liblocale-ruby1.9.1
 liblwp-useragent-determined-perl
+libmail-box-perl
 libtcltk-ruby1.9.1
 libwww-perl
 libxml2-dev

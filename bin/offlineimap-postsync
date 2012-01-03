@@ -1,0 +1,2 @@
+#!/bin/bash
+hascommand notmuch && [ -f ~/.notmuch-config ] && exec notmuch new

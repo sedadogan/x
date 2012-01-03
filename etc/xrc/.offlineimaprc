@@ -12,6 +12,8 @@ pythonfile = ~/.offlineimap.py
 localrepository = Local
 remoterepository = GoogleApps
 holdconnectionopen = yes
+# Notmuch ile mail arama için hazırlık
+postsynchook = offlineimap-postsync
 # 3 dakika aralıklarla güncelleme yap
 autorefresh = 3
 
