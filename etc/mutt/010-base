@@ -76,8 +76,8 @@ set reply_to=ask-yes
 # ----------------------------------------------------------------------------
 
 ignore * # Ignore all except below
-unignore from: subject to cc reply-to date
-hdr_order Date: To: CCc: Reply-To: From: Subject:
+unignore from subject to cc reply-to date
+hdr_order date to cc reply-to from subject
 
 # ----------------------------------------------------------------------------
 # Biçimleme dizgileri
