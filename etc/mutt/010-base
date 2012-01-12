@@ -77,10 +77,7 @@ set reply_to=ask-yes
 
 ignore * # Ignore all except below
 unignore from: subject to cc reply-to date
-hdr_order From: Date: To: CCc: X-Hostname-Fqdn: X-Newsreader: X-Mailer: \
-          Organization: Organisation: User-Agent: X-Fnord:\
-	  X-WebTV-Stationery: X-Message-Flag: Newsgroups:\
-	  Reply-To: X-Spam-Status: x-spam-rule: x-SpamProbe: Subject:
+hdr_order Date: To: CCc: Reply-To: From: Subject:
 
 # ----------------------------------------------------------------------------
 # Biçimleme dizgileri
