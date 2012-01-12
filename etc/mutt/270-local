@@ -5,27 +5,31 @@ unmailboxes +msgid.cache +Archive +temp +junk +spam +bogus "+All Mail"
 
 # Posta listelerini ayrı ayrı tanımla.
 lists	admin@bil.omu.edu.tr \
-	bal@bil.omu.edu.tr \
-	bil@bil.omu.edu.tr \
-	bildim@bil.omu.edu.tr \
-	bilen@bil.omu.edu.tr \
-	dev@bil.omu.edu.tr \
-	forum@bil.omu.edu.tr \
-	hoca@bil.omu.edu.tr \
-	l10n@bil.omu.edu.tr \
-	web@bil.omu.edu.tr \
+	19@bil.omu.edu.tr \
+	19@ce.omu.edu.tr \
 	admin@ce.omu.edu.tr \
+	bal@bil.omu.edu.tr \
 	bal@ce.omu.edu.tr \
+	bil@bil.omu.edu.tr \
 	bil@ce.omu.edu.tr \
+	bildim@bil.omu.edu.tr \
 	bildim@ce.omu.edu.tr \
+	bilen@bil.omu.edu.tr \
 	bilen@ce.omu.edu.tr \
+	dev@bil.omu.edu.tr \
 	dev@ce.omu.edu.tr \
+	forum@bil.omu.edu.tr \
 	forum@ce.omu.edu.tr \
+	hoca@bil.omu.edu.tr \
 	hoca@ce.omu.edu.tr \
+	l10n@bil.omu.edu.tr \
 	l10n@ce.omu.edu.tr \
+	web@bil.omu.edu.tr \
 	web@ce.omu.edu.tr \
 	teknik@uzem.omu.edu.tr
 subscribe admin@bil.omu.edu.tr \
+	19@bil.omu.edu.tr \
+	19@ce.omu.edu.tr \
 	bal@bil.omu.edu.tr \
 	bil@bil.omu.edu.tr \
 	bildim@bil.omu.edu.tr \
