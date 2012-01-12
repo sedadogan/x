@@ -76,9 +76,7 @@ set reply_to=ask-yes
 # ----------------------------------------------------------------------------
 
 ignore * # Ignore all except below
-unignore from: subject to cc mail-followup-to reply-to\
-         date x-mailer user-agent x-url x-hostname-fqdn
-unignore organization organisation
+unignore from: subject to cc reply-to date
 hdr_order From: Date: To: CCc: X-Hostname-Fqdn: X-Newsreader: X-Mailer: \
           Organization: Organisation: User-Agent: X-Fnord:\
 	  X-WebTV-Stationery: X-Message-Flag: Newsgroups:\
