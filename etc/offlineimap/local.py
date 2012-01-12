@@ -6,14 +6,13 @@ __builtin__.PRIORITIZED = [
 	'INBOX',
         'inbox',
 	'Gelen Kutusu',
+	'19',
 	'dev',
 	'admin',
+	'web',
 	'bilen',
 	'bildim',
-	'web',
-	'203',
-	'19',
 	'forum',
-	'uzem.teknik',
+	'uzem',
         # diğer öncelikli kutular?
 ]
