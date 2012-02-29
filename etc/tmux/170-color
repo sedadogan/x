@@ -17,9 +17,9 @@ set-window-option -g window-status-current-attr bright
 set-window-option -g window-status-current-format " #[fg=magenta,bright]#I:#[fg=yellow,bright]#W#[fg=default] "
 
 # aktivite renkleri
-set-window-option -g window-status-alert-fg black
-set-window-option -g window-status-alert-bg white
-set-window-option -g window-status-alert-attr bright
+set-window-option -g window-status-activity-fg black
+set-window-option -g window-status-activity-bg white
+set-window-option -g window-status-activity-attr bright
 
 # pencere listesini ortala
 set -g status-justify centre

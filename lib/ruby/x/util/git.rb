@@ -81,9 +81,7 @@ module X
           option[:repo] = repo
         end
 
-        config = Git.config
-
-        account = option.fetch(:account, config[:login])
+        account = option.fetch(:account, Git.config(:login))
         repo    = option[:repo]
         file    = option[:file]
         branch  = option.fetch(:branch, 'master')
