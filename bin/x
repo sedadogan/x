@@ -54,7 +54,6 @@ readonly COWFILE='doc/images/19x.png'
 
 # Bu paketler en başta gerekiyor.
 readonly DEB_CORE="
-aptitude
 curl
 git
 pdmenu
@@ -1832,7 +1831,7 @@ go() {
 	if [ -z "$HAS_APT_UPDATED" ]; then
 		say "Paket indeksleri güncelleniyor..."
 		sudoattempt
-		xaptitude update ||:
+		xaptget update ||:
 		HAS_APT_UPDATED=yes
 	fi
 

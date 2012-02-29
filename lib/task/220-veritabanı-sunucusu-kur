@@ -55,7 +55,7 @@ esac
 
 if [ $added -gt 0 ] || [ -z "$HAS_APT_UPDATED" ]; then
 	say "Paket indeksleri güncelleniyor..."
-	xaptitude update ||:
+	xaptget update ||:
 fi
 
 installdebs "Gerekli Deb paketleri kuruluyor" $DEB_BASE
