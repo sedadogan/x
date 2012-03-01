@@ -48,13 +48,13 @@ ronn
 
 GEM_EXTRA="
 chunky_png
+CoffeeTags
 gdata4ruby
 gdocs4ruby
 methopara
 oily_png
 pythonconfig
 rdp-arguments
-rvm
 "
 
 hascommand ruby1.9.1 || hascommand gem1.9.1 || hascommand ruby || hascommand gem || {
