@@ -10,7 +10,7 @@ set -g set-titles-string "#W"
 # ortam değişkenlerine neler eklenmeli
 set -ag update-environment "X X_ATTR"
 # sorunsuz geri sardırma için
-set -g terminal-overrides 'xterm*:smcup@:rmcup@'
+set -ag terminal-overrides 'xterm*:smcup@:rmcup@'
 
 # jenerik ayarlar
 set -g bell-action none
