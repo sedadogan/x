@@ -59,7 +59,8 @@ if exists("g:loaded_syntastic_plugin")
 				return
 			endif
 			if ! executable('govet')
-				SyntasticDisable
+				" FIXME Toggle yerine doğrudan disable et
+				SyntasticToggleMode
 				return
 			endif
 			function! SyntaxCheckers_go_GetLocList()
@@ -76,7 +77,8 @@ if exists("g:loaded_syntastic_plugin")
 	" kaynak dosyaların varlığından dolayı) gürültü oluyor.
 	function! s:disable_syntastic_on_c_projects()
 		if s:has_buildfiles()
-			SyntasticDisable
+			" FIXME Toggle yerine doğrudan disable et
+			SyntasticToggleMode
 		endif
 	endfunction
 	autocmd FileType c,cpp call s:disable_syntastic_on_c_projects()
