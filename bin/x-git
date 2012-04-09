@@ -23,8 +23,9 @@ ensure_not_in_dir() {
 _run() {
 	local message="$1"
 	local cmd="$2"
+	[ -z "$ARGS" ] || cmd="$cmd $ARGS"
 	echo -e -n "${CO_HILITE}$message ${CO_NORMAL}" 2>&1
-	if $cmd $ARGS >/dev/null 2>&1; then
+	if $cmd >/dev/null 2>&1; then
 		echo -e "${CO_GOOD}tamam${CO_NORMAL}" 2>&1
 	else
 		echo -e "${CO_BAD}olmadı${CO_NORMAL}" 2>&1
