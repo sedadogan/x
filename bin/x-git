@@ -50,7 +50,17 @@ _git_push() {
 }
 
 _git_pull() {
+	local prev=$(git rev-parse HEAD 2>/dev/null ||:)
 	_run "Güncelleniyor..." "/usr/bin/git pull"
+	case "$(git rev-parse HEAD 2>/dev/null ||:)" in
+	$prev)
+		say "Güncelleme yok"
+		;;
+	*)
+		say "Güncelleme var"
+		git log --oneline --name-only $prev...HEAD | sed -e "s/^/\t/"
+		;;
+	esac
 	return 0
 }
 
@@ -61,7 +71,7 @@ git-.)
 	;;
 git-..)
 	ensure_not_in_dir ~
-	_git_commit || err=$?
+	err=0; _git_commit || err=$?
 	[ $err -eq 1 ] || _git_push
 	;;
 git-=)
