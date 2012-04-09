@@ -6,6 +6,7 @@ use git
 PROGNAME="${0##*/}"
 COMMITMESSAGE="${GIT_DEFAULT_COMMIT_MESSAGE:=.}"
 GITDIR=$(/usr/bin/git rev-parse --git-dir 2>/dev/null ||:)
+ARGS="$@"
 
 [ -n "$GITDIR" ] || die "Bir Git dizinininde değilsiniz"
 GITDIR=$(readlink -f "$GITDIR")
@@ -23,7 +24,7 @@ _run() {
 	local message="$1"
 	local cmd="$2"
 	echo -e -n "${CO_HILITE}$message ${CO_NORMAL}" 2>&1
-	if $cmd >/dev/null 2>&1; then
+	if $cmd $ARGS >/dev/null 2>&1; then
 		echo -e "${CO_GOOD}tamam${CO_NORMAL}" 2>&1
 	else
 		echo -e "${CO_BAD}olmadı${CO_NORMAL}" 2>&1
