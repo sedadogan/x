@@ -67,8 +67,6 @@ else
 fi
 # 'g' için otomatik tamamlama desteği
 complete -o default -o nospace -F _git g
-# 'h' henüz olgunlaşmamış projeler için kısayol
-alias h='git commit -a -m hmm'
 alias gbp='git-buildpackage';     complete -F _git_buildpackage gbp
 
 # Youtube'den ses dosyası indir.
