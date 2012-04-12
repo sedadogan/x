@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Kaynak: http://www.imagemagick.org/Usage/thumbnails/#square
+
 [ $# -eq 2 ] || {
 	echo >&2 "Kullanım: $0 GİRDİ ÇIKTI"
 	exit 1
