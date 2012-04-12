@@ -1,0 +1,15 @@
+#!/bin/sh
+
+[ $# -eq 2 ] || {
+	echo >&2 "Kullanım: $0 GİRDİ ÇIKTI"
+	exit 1
+}
+
+[ -f "$1" ] || {
+	echo >&2 "'$1' dosyası bulunamadı"
+	exit 1
+}
+
+convert "$1" \
+	\( +clone -rotate 90 +clone -mosaic +level-colors white \) \
+	+swap -gravity center -composite "$2"

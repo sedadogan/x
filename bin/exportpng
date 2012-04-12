@@ -1,0 +1,28 @@
+#!/bin/sh
+
+die() { echo >&2 $*; exit 1; }
+
+[ $# -ge 2 ] || die "Kullanım: $0 SVG ID [BOYUT (öntanımlı 640px]"
+
+INFILE="$1"
+ID="$2"
+SIZE="${3:-640}"
+OUTFILE="${INFILE%.*}.png"
+
+[ -f "$INFILE" ] || die "'$INFILE' dosyası bulunamadı"
+
+set -- $(
+	inkscape -S "$INFILE" |
+	awk -F, '$1 == "'$ID'" { print $4 " " $5 }'
+)
+width="$1"; height="$2"
+
+if [ -z "$width" ] || [ -z "$height" ]; then
+	die "'$INFILE' dosyasında '$ID' özelliği bulunmadı"
+fi
+
+w_or_h=$(
+	perl -e "print $width >= $height ? 'w' : 'h'"
+)
+
+inkscape --export-id-only --export-id="$ID" --export-png="$OUTFILE" -$w_or_h "$SIZE" "$INFILE"
