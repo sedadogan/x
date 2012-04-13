@@ -2,7 +2,7 @@
 
 # Kaynak: http://www.imagemagick.org/Usage/thumbnails/#square
 
-[ $# -eq 2 ] || {
+[ $# -ge 2 ] || {
 	echo >&2 "Kullanım: $0 GİRDİ ÇIKTI"
 	exit 1
 }
@@ -14,4 +14,5 @@
 
 convert "$1" \
 	\( +clone -rotate 90 +clone -mosaic +level-colors white \) \
-	+swap -gravity center -composite "$2"
+	+swap -gravity center -composite \
+	\( -frame 10%x10% -mattecolor white \) "$2"
