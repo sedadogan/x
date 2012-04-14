@@ -1,3 +1,8 @@
+# tepe dizini göster
+git_top_level() {
+	git rev-parse --show-toplevel
+}
+
 # hangi daldayız?
 git_current_branch() {
 	local br
