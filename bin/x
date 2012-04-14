@@ -947,14 +947,18 @@ git_branch_exist() {
 }
 
 # depo temiz durumda mı?
-git_modified() {
-	[ -n "$(git ls-files -m "$@" 2>/dev/null ||:)" ]
+git_is_clean() {
+	{
+		git diff-index HEAD --exit-code --quiet &&
+		git diff-index --cached HEAD --exit-code --quiet
+	} >/dev/null 2>&1 || return 1
+	return 0
 }
 
 # geçici olarak tüm değişiklikleri kaydet
 git_stash_push() {
 	unset GIT_STASH_PUSHED
-	if git_modified; then
+	if ! git_is_clean; then
 		GIT_STASH_PUSHED=yes
 		git stash save -q
 	fi

@@ -35,11 +35,11 @@ _run() {
 }
 
 _git_commit() {
-	if git_modified; then
-		_run "Kaydediliyor..." "/usr/bin/git commit -a -m '$COMMITMESSAGE'"
-	else
+	if git_is_clean; then
 		say "Değişiklik yok"
 		return 127
+	else
+		_run "Kaydediliyor..." "/usr/bin/git commit -a -m '$COMMITMESSAGE'"
 	fi
 	return 0
 }
