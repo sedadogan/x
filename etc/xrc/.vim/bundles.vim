@@ -1,6 +1,7 @@
 " Yeni eklenti eklemek için bu dosyayı düzenlemek yerine ~/.vim/local.vim
 " dosyasını düzenleyin.
 
+" Bundle: git://github.com/bbommarito/vim-slim.git
 " Bundle: git://github.com/bronson/vim-trailing-whitespace.git
 " Bundle: git://github.com/ervandew/supertab.git
 " Bundle: git://github.com/garbas/vim-snipmate.git
