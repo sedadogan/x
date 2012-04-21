@@ -24,6 +24,8 @@ require 'fileutils'
 require 'open-uri'
 require 'openssl'
 
+# XXX: Hack to avoid ECONNRESET errors when connecting to GitHub over SSL
+OpenSSL::SSL::SSLContext::DEFAULT_PARAMS[:ssl_version] = "SSLv3"
 
 def dotvim *path
   # Path to files inside your .vim directory, i.e. dotvim('autoload', 'pathogen')
