@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PROGNAME="${0##*/}"
+# TODO Çözünürlük değerini seçenek yap
+DPI=${PNG_DPI:=600}
+
+[ $# -gt 0 ] || {
+	echo >&2 "Kullanım: $PROGNAME <pdf-dosyası> [<sayfa-başlangıç>] [<sayfa-bitiş>]"
+	echo >&2 "PDF'den (öntanımlı olarak ${DPI} dpi yoğunluklu) PNG üretir."
+	echo >&2
+	echo >&2 "Örnekler: $PROGNAME foo.pdf 19    # foo-19.png dosyasını üretir."
+	echo >&2 "          $PROGNAME foo.pdf 19 21 # foo-[0-2].png dosyalarını üretir."
+	echo >&2 "          $PROGNAME foo.pdf       # foo.pdf'teki tüm sayfaları üretir."
+	exit 1
+}
+
+INFILE="$1"
+FIRST="$2"
+LAST="$3"
+
+alias rungs="gs -dBATCH -dNOPAUSE -sDEVICE=png16m -r'$DPI'"
+
+if [ -z "$FIRST" ] && [ -z "$LAST" ]; then
+	rungs -sOutputFile="${INFILE%.*}-%03d.png" "$INFILE"
+elif [ -z "$LAST" ]; then
+	# TODO sayfa numaralarını başlangıç ve bitiş ile aynı yap
+	rungs -dFirstPage="$FIRST" -dLastPage="$FIRST" -sOutputFile="${INFILE%.*}-${FIRST}.png" "$INFILE"
+else
+	rungs -dFirstPage="$FIRST" -dLastPage="$LAST" -sOutputFile="${INFILE%.*}-%03d.png" "$INFILE"
+fi
