@@ -38,6 +38,9 @@ alias rm='rm -i'
 alias ~='sudo -E -s'
 
 # "cd" kısayolları.
+alias ..='cd ..'
+alias ...='cd ../..'
+alias -='cd -'
 alias cd..='cd ..'
 alias cd...='cd ../..'
 alias cd-='cd -'
@@ -66,10 +69,6 @@ fi
 # 'g' için otomatik tamamlama desteği
 complete -o default -o nospace -F _git g
 alias gbp='git-buildpackage';     complete -F _git_buildpackage gbp
-# gündelik işleri daha da kısalt
-alias .='git .'
-alias ..='git ..'
-alias -='git ='
 
 # Youtube'den ses dosyası indir.
 alias yt="youtube-dl -o '%(title)s.%(ext)s' --extract-audio --audio-format=mp3"
