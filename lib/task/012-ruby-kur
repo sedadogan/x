@@ -60,8 +60,8 @@ else
 	# isimlendirilmiş şekilde.  Ayrıca bir rake paketi de var.  Bu paketle
 	# gelen rake yeni sürümlerde ruby1.9.1 ile aynı, tek farkı öntanımlı
 	# ruby'yi kullanması.  Bu durumda ya rake için bir symlink oluşturup
-	# rake1.9.1'e bağlayacak ve rake paketini asla kurmayacağız (hata verir)
-	# ya da sistemde iki rake olmasına göz yumup rake paketini kuracağız.
+	# rake1.9.1'e bağlayacak ve rake paketini kurmayacağız (hata verir) ya
+	# da sistemde iki rake olmasına göz yumup rake paketini kuracağız.
 	# Sisteme minimum müdahale için ikinci yolu tercih ediyoruz.
 	xaptget install rake
 fi
