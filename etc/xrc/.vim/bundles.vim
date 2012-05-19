@@ -11,6 +11,7 @@
 " Bundle: git://github.com/kchmck/vim-coffee-script.git
 " Bundle: git://github.com/majutsushi/tagbar.git
 " Bundle: git://github.com/MarcWeber/vim-addon-mw-utils.git
+" Bundle: git://github.com/mattn/webapi-vim.git
 " Bundle: git://github.com/scrooloose/syntastic.git
 " Bundle: git://github.com/spiiph/vim-space.git
 " Bundle: git://github.com/tomtom/tlib_vim.git

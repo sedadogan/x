@@ -14,7 +14,6 @@ yesno "Bu makinede parola bulundurmak istediğinize emin misiniz?" || exit 0
 
 # Hedef dosyalar
 PASSFILE="${PRIVATEDIR}/gmail.base64"
-TOKENFILE="${PRIVATEDIR}/github"
 
 # Özel dizini oluştur
 mkdir -p "$PRIVATEDIR"
@@ -39,51 +38,4 @@ touchsafe .gitconfig
 
 if [ -n "$GITHUB_USER" ]; then
 	git config --file .gitconfig github.user "$GITHUB_USER" 2>/dev/null ||:
-fi
-
-# Önce boş bir token dosyası oluştur
-touchsafe "$TOKENFILE"
-
-if [ -z "$GITHUB_TOKEN" ] && anyattr gui && [ -n "$DISPLAY" ] && hascommand xclip; then
-	cry "GitHub API token değeri kaydedilecek..."
-
-	cat <<-EOT
-
-Lütfen GitHub hesabınıza giriş yaptıktan sonra hesap ayarlarında aşağıda adresi
-verilen sekmeye girerek API token değerini fareyle seçin ve tekrar bu ekrana
-gelin.  API token değerini seçilir seçilmez otomatik olarak algılanacak ve
-sizden onay istenecektir.  Kayıt işleminden çıkmak için lütfen Ctrl-C tuşuna
-basın.
-
-        https://github.com/account#admin_bucket
-
-EOT
-	# panoyu sıfırla
-	echo | xclip -i
-	while :; do
-		sleep 1
-		GITHUB_TOKEN=$(xclip -o)
-		if [ -n "$GITHUB_TOKEN" ] && gh_istoken "$GITHUB_TOKEN"; then
-			cry "Seçilen: $GITHUB_TOKEN"
-			if yesno "Bu değer GitHub API token olarak kaydedilsin mi" e; then
-				break
-			else
-				GITHUB_TOKEN=; echo | xclip -i
-				cry "Lütfen tekrar deneyin!"
-			fi
-		fi
-	done
-fi
-
-if [ -n "$GITHUB_TOKEN" ]; then
-	echo "$GITHUB_TOKEN" >"$TOKENFILE"
-	cry "GitHub token '$TOKENFILE' dosyasına alındı."
-
-	if [ -n "$TASKSEL" ]; then
-		cry "Token değerinin etkin olması için"\
-		    "lütfen oturumu yeniden başlatın."
-	fi
-else
-	cry "Lütfen GitHub token değerini öğrenip '$TOKENFILE'"\
-	    "dosyasına kaydedin."
 fi
