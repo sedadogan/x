@@ -8,7 +8,7 @@ origin_url="$(git config remote.origin.url 2>/dev/null ||:)"
 upstream_url="$(git config remote.upstream.url 2>/dev/null ||:)"
 
 # Merge işleminde editörü çağırma.
-export GIT_MERGE_AUTOEDIT=no
+export GIT_MERGE_AUTOEDIT=yes
 
 say "Depo güncelleniyor..."
 printf "\tUzak depo\t$origin_url\n\tÜst depo\t$upstream_url\n"
