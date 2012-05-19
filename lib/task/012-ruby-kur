@@ -16,7 +16,7 @@ if [ -z "$HAS_APT_UPDATED" ]; then
 	xaptget update ||:
 fi
 
-# kaba kuvvete dayalı bir çözüm olarak Ruby paketlerini tekrar kur.  Dikkat!
+# Kaba kuvvete dayalı bir çözüm olarak Ruby paketlerini tekrar kur.  Dikkat!
 # ruby1.8 için rake ve gem'i kurmuyoruz
 xaptget install --reinstall ruby1.9.1 ruby1.9.1-dev ri1.9.1 ruby1.8 ruby1.8-dev ri1.8 build-essential
 
