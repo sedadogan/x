@@ -17,7 +17,7 @@ if [ -z "$HAS_APT_UPDATED" ]; then
 fi
 
 # kaba kuvvete dayalı bir çözüm olarak Ruby paketlerini tekrar kur.  Dikkat!
-# ruby1.8 için rake ve gem'i kurmuyoruz.
+# ruby1.8 için rake ve gem'i kurmuyoruz
 xaptget install --reinstall ruby1.9.1 ruby1.9.1-dev ri1.9.1 ruby1.8 ruby1.8-dev ri1.8 build-essential
 
 # Yeni sürümlerde kullanılan alternatif sistemini eski sistemlere birebir uyarla.
@@ -55,6 +55,15 @@ if dpkg --compare-versions "${RUBY_VERSION}" lt 1.9.2.180-2; then
 		# 1.9.1 → 10 ve 1.8 → 50 önceliğinde (öntanımlı ruby1.8)
 		p+=40
 	done
+else
+	# Aslında rake ruby1.9.1 ile standart geliyor, fakat rake1.9.1 olarak
+	# isimlendirilmiş şekilde.  Ayrıca bir rake paketi de var.  Bu paketle
+	# gelen rake yeni sürümlerde ruby1.9.1 ile aynı, tek farkı öntanımlı
+	# ruby'yi kullanması.  Bu durumda ya rake için bir symlink oluşturup
+	# rake1.9.1'e bağlayacak ve rake paketini asla kurmayacağız (hata verir)
+	# ya da sistemde iki rake olmasına göz yumup rake paketini kuracağız.
+	# Sisteme minimum müdahale için ikinci yolu tercih ediyoruz.
+	xaptget install rake
 fi
 
 # Resmi alternatiflerde ruby1.8 öntanımlı.  Bunu 1.9.1 yap.
