@@ -39,7 +39,7 @@ _git_commit() {
 		say "Değişiklik yok"
 		return 127
 	else
-		_run "Kaydediliyor..." "/usr/bin/git commit -a -m '$COMMITMESSAGE'"
+		_run "Kaydediliyor..." "/usr/bin/git commit -a -m "$COMMITMESSAGE""
 	fi
 	return 0
 }
