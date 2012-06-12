@@ -11,7 +11,7 @@ say "Depo güncelleniyor..."
 printf "\tUzak depo\t$origin_url\n\tÜst depo\t$upstream_url\n"
 
 say "Yerel depo uzak depo ile eşzamanlanıyor..."
-if git_pull_success_on_update --no-edit origin master; then
+if git_pull_success_on_update origin master; then
 	cry "Uzak depodaki değişiklikler alındı."
 else
 	cry "Değişiklik yok."
@@ -20,7 +20,7 @@ fi
 case "$origin_url" in
 git@*|https://*@*)
 	say "Üst depo değişiklikleri alınıyor..."
-	if git_pull_success_on_update --no-edit upstream master; then
+	if git_pull_success_on_update upstream master; then
 		cry "Üst depodan alınan değişiklikler uzak depoya gönderiliyor..."
 		git push --all
 	else

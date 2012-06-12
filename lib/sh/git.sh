@@ -118,7 +118,7 @@ git_pull_success_on_update() {
 	local prev
 
 	prev=$(git rev-parse HEAD 2>/dev/null ||:)
-	git pull "$@" || return 0
+	GIT_MERGE_AUTOEDIT=no git pull "$@" || return 0
 	case "$(git rev-parse HEAD 2>/dev/null ||:)" in
 	$prev)
 		return 1
