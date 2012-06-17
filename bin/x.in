@@ -587,7 +587,7 @@ go() {
 		    "Lütfen önce bu depoyu çoğaltarak oluşturun."
 	fi
 
-	local origin= "00010011/x"
+	local origin="00010011/x"
 	local parent=$(json_get_in_reply parent full_name 2>/dev/null ||:)
 	if [ -z "$parent" ]; then
 		die "Hesabınızda bulunan '$REPOSITORY' deposu çoğaltılmış" \

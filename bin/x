@@ -726,33 +726,38 @@ yesno() {
 # URL'deki veriyi stdandart çıktıda görüntüle
 #
 # Kullanım: <URL>
-get() {
-	perl -e '
-		use strict;
-		use warnings;
-		use LWP::UserAgent;
-		use JSON qw(decode_json);
-		use feature qw(say);
-		use open qw(:std :utf8);
+if perl -e 'use HTTP::Tiny; use IO::Socket::SSL;' 2>/dev/null; then
+	# HTTP::Tiny modülü Perl 5.14 ile standart geliyor
+	# Fakat IO::Socket::SSL standart değil maalesef :-(
+	get() {
+		perl -e '
+			use strict;
+			use warnings;
+			use feature qw(say);
+			use open qw(:std :utf8);
 
-		unless (@ARGV) {
-			die "no URL given!\n";
-		}
+			use HTTP::Tiny;
 
-		my $url = shift @ARGV;
-		my $ua = LWP::UserAgent->new;
+			unless (@ARGV) {
+				die "no URL given!\n";
+			}
 
-		my $response = $ua->get($url);
-		unless ($response->is_success) {
-			die "Could not get $url: $response->status_line\n";
-		}
+			my $url = shift @ARGV;
+			my $http = HTTP::Tiny->new;
 
-		my $content = $response->decoded_content;
-		die "Undefined content!\n" unless defined $content;
+			my $response = $http->get($url);
+			unless ($response->{success}) {
+				die "Could not get $url: $response->{status}\n";
+			}
 
-		say $content;
-	' "$@"
-}
+			say $response->{content};
+		' "$@"
+	}
+else
+	get() {
+		curl -s -k "$@"
+	}
+fi
 
 # Standart girdideki JSON verisinden değer oku
 #
@@ -761,9 +766,10 @@ json_get() {
 	perl -e '
 		use strict;
 		use warnings;
-		use JSON qw(decode_json);
 		use feature qw(say);
 		use open qw(:std :utf8);
+
+		use JSON qw(decode_json);
 
 		my $json = do { local $/; <STDIN> };
 		die "Empty json content!\n" unless defined $json;
@@ -1743,7 +1749,7 @@ go() {
 		    "Lütfen önce bu depoyu çoğaltarak oluşturun."
 	fi
 
-	local origin= "00010011/x"
+	local origin="00010011/x"
 	local parent=$(json_get_in_reply parent full_name 2>/dev/null ||:)
 	if [ -z "$parent" ]; then
 		die "Hesabınızda bulunan '$REPOSITORY' deposu çoğaltılmış" \
