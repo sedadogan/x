@@ -560,7 +560,7 @@ go() {
 			local user
 			ask "GitHub hesap adınız?" "$USER"
 			user="$REPLY"
-			if ! gh_api 'users/%s'; then
+			if ! gh_api_fetch "users/$user"; then
 				cry "'$user' adında bir GitHub hesabı yok"
 				if yesno "Tekrar denemek ister misiniz?"; then
 					continue
