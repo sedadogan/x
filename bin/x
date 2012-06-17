@@ -1646,13 +1646,13 @@ go() {
 		if ! hascommand "$p"; then
 			missing="$missing $p"
 		fi
-		# Artık perl ile JSON ayrıştırması yapıyoruz.  Bu modül perl
-		# 5.14 ile standart geliyor.  Ama eski sürümler için gerekli
-		# paketi kurmalıyız.
-		if ! perl -e 'use JSON' 2>/dev/null; then
-			missing="$missing libjson-perl"
-		fi
 	done
+	# Artık perl ile JSON ayrıştırması yapıyoruz.  Bu modül perl
+	# 5.14 ile standart geliyor.  Ama eski sürümler için gerekli
+	# paketi kurmalıyız.
+	if ! perl -e 'use JSON' 2>/dev/null; then
+		missing="$missing libjson-perl"
+	fi
 	if [ -n "$missing" ]; then
 		case "$missing" in
 		*sudo*)
