@@ -723,6 +723,134 @@ yesno() {
 	done
 }
 
+# URL'deki veriyi stdandart çıktıda görüntüle
+#
+# Kullanım: <URL>
+get() {
+	perl -e '
+		use strict;
+		use warnings;
+		use LWP::UserAgent;
+		use JSON qw(decode_json);
+		use feature qw(say);
+		use open qw(:std :utf8);
+
+		unless (@ARGV) {
+			die "no URL given!\n";
+		}
+
+		my $url = shift @ARGV;
+		my $ua = LWP::UserAgent->new;
+
+		my $response = $ua->get($url);
+		unless ($response->is_success) {
+			die "Could not get $url: $response->status_line\n";
+		}
+
+		my $content = $response->decoded_content;
+		die "Undefined content!\n" unless defined $content;
+
+		say $content;
+	' "$@"
+}
+
+# Standart girdideki JSON verisinden değer oku
+#
+# Kullanım: [<anahtar...>]
+json_get() {
+	perl -e '
+		use strict;
+		use warnings;
+		use JSON qw(decode_json);
+		use feature qw(say);
+		use open qw(:std :utf8);
+
+		my $json = do { local $/; <STDIN> };
+		die "Empty json content!\n" unless defined $json;
+
+		my ($decoded_json, @stack) = (decode_json($json), ());
+		while (@ARGV) {
+			push @stack, (my $key = shift @ARGV);
+			unless (exists $decoded_json->{$key}) {
+				$key = join ".", @stack;
+				die "no key: $key\n";
+			}
+			$decoded_json = $decoded_json->{$key};
+		}
+
+		if ((my $ref = ref $decoded_json) eq "") {
+			say $decoded_json;
+		}
+		elsif ($ref =~ m/[Bb]oolean/) {
+			say $decoded_json ? "1" : "0";
+		}
+		else {
+			use Data::Dumper;
+			$Data::Dumper::Terse = 1;
+			$Data::Dumper::Deepcopy = 1;
+			say Dumper $decoded_json;
+		}
+	' "$@"
+}
+
+# REPLY değişkenindeki JSON verisinden oku
+#
+# Kullanım: [<anahtar>...]
+json_get_in_reply() {
+	if [ -n "$REPLY" ]; then
+		json_get "$@" <<<"$REPLY" 2>/dev/null
+	fi
+}
+
+# Github API verisini REPLY'a oku
+#
+# Kullanım: <API yolu>
+#
+# API yolunda kullanılan '%s' dizgileri Github kullanıcı adıyle otomatik olarak
+# değiştirilir.
+#
+# Örnekler:
+#
+# 	gh_api_fetch repos/%s/%s.github.com
+# 	gh_api_fetch repos/%s/foo
+#	gh_api_fetch repos/ecylmz/foo
+#
+gh_api_fetch() {
+	local user path command
+
+	: ${user:=$GITHUB_USER}
+	: ${user:=$USER}
+
+	unset REPLY
+
+	path=$1
+	path=$(printf "$path" "$user")
+	path=${path#/}
+	shift
+
+	REPLY=$(get "https://api.github.com/${path}" "$@" 2>/dev/null) || return
+}
+
+# Github API verisinden verilen değerleri oku
+#
+# Kullanım: <API yolu> [<anahtar>...]
+#
+# API yolunda kullanılan '%s' dizgileri Github kullanıcı adıyle otomatik olarak
+# değiştirilir.
+#
+# Örnekler:
+#
+# 	gh_api repos/%s/%s.github.com
+# 	gh_api repos/%s/foo source owner gravatar_id
+#	gh_api repos/ecylmz/foo
+#
+gh_api() {
+	path=$1
+	shift
+
+	gh_api_fetch "$path" && json_get_in_reply "$@"
+}
+
 # apt-get sarmalayıcı (dikkat!  güvensiz paketleri de kurar)
 xaptget() {
 	local command
@@ -1053,61 +1181,7 @@ git_pull_success_on_update() {
 	esac
 }
 
-# GitHub API
-
-# github api erişimi
-gh_api() {
-	local args user token url https quiet format command
-
-	unset REPLY
-
-	args=$(getopt "su:t:f:" $*) || bug "getopt hatası: $*"
-
-	set -- $args
-	while [ $# -ge 0 ]; do
-		case "$1" in
-		-s) https=yes;   shift ;;
-		-u) user="$2";   shift; shift ;;
-		-t) token="$2";	 shift; shift ;;
-		-f) format="$2"; shift; shift ;;
-		--) shift; break ;;
-		esac
-	done
-
-	[ $# -eq 1 ] || bug "eksik veya fazla argüman"
-
-	: ${user:="$GITHUB_USER"}
-	: ${token:="$GITHUB_TOKEN"}
-	: ${format:='yaml'}
-
-	url=$(printf "$1" "$user")
-
-	if [ -n "$https" ]; then
-		[ -n "$user"  ] || bug "GitHub hesabı verilmeli"
-		[ -n "$token" ] || bug "GitHub token verilmeli"
-		command="curl -s -F 'login=${user}' -F 'token=${token}' https://github.com/api/v2/${format}/${url}"
-	else
-		command="curl -s http://github.com/api/v2/${format}/${url}"
-	fi
-
-	REPLY=$($command 2>/dev/null)     || return
-	if echo "$REPLY" | egrep -q '^error'; then
-		REPLY=
-		return 1
-	fi
-}
-
-# verilen dizgi geçerli bir github token değeri mi?
-gh_istoken() {
-	local token="$1"
-	[ ${#token} -eq 32 ] || return 1
-	echo "$token" | egrep -q -v '[0-9a-fA-F]' && return 1
-	return 0
-}
-
-# github api için http ve https erişimleri
-gh_http()  { gh_api    "$@"; }
-gh_https() { gh_api -s "$@"; }
+# GitHub
 
 # github ssh ile erişilebilir durumda mı?
 gh_writable() {
@@ -1572,6 +1646,12 @@ go() {
 		if ! hascommand "$p"; then
 			missing="$missing $p"
 		fi
+		# Artık perl ile JSON ayrıştırması yapıyoruz.  Bu modül perl
+		# 5.14 ile standart geliyor.  Ama eski sürümler için gerekli
+		# paketi kurmalıyız.
+		if ! perl -e 'use JSON' 2>/dev/null; then
+			missing="$missing libjson-perl"
+		fi
 	done
 	if [ -n "$missing" ]; then
 		case "$missing" in
@@ -1636,7 +1716,7 @@ go() {
 			local user
 			ask "GitHub hesap adınız?" "$USER"
 			user="$REPLY"
-			if ! gh_http -u "$user" 'user/show/%s'; then
+			if ! gh_api 'users/%s'; then
 				cry "'$user' adında bir GitHub hesabı yok"
 				if yesno "Tekrar denemek ister misiniz?"; then
 					continue
@@ -1658,16 +1738,20 @@ go() {
 	# ---------------------------------------------------------------------
 
 	# Mevcut bilgilere göre hedef deponun varlığını kontrol et.
-	if ! gh_http "repos/show/%s/$REPOSITORY" 2>/dev/null || [ -z "$REPLY" ]; then
+	if ! gh_api_fetch "repos/%s/$REPOSITORY" 2>/dev/null; then
 		die "Hesabınızda '$REPOSITORY' isimli bir depo mevcut değil. " \
 		    "Lütfen önce bu depoyu çoğaltarak oluşturun."
 	fi
 
-	local parent
-	parent=$(echo "$REPLY" | sed -ne 's/\s\+:parent:\s\+//p' 2>/dev/null)
+	local origin= "00010011/x"
+	local parent=$(json_get_in_reply parent full_name 2>/dev/null ||:)
 	if [ -z "$parent" ]; then
 		die "Hesabınızda bulunan '$REPOSITORY' deposu çoğaltılmış" \
 		    "(fork edilmiş) bir depo değil."
+	elif [ $parent != "$origin" ]; then
+		die "Hesabınızda bulunan '$REPOSITORY' deposu hatalı bir " \
+		    "depodan ('$parent') çoğaltılmış.  Lütfen bu depoyu silin " \
+		    "ve '$origin' deposundan çoğaltma yapın."
 	fi
 
 	# Şimdilik bir ara dizine klonla, salt okunur olarak (git:// şeması).

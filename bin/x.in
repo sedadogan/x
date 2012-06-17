@@ -68,6 +68,8 @@ sudo
 
 ### std.sh
 
+### data.sh
+
 ### package.sh
 
 ### string.sh
@@ -488,6 +490,12 @@ go() {
 		if ! hascommand "$p"; then
 			missing="$missing $p"
 		fi
+		# Artık perl ile JSON ayrıştırması yapıyoruz.  Bu modül perl
+		# 5.14 ile standart geliyor.  Ama eski sürümler için gerekli
+		# paketi kurmalıyız.
+		if ! perl -e 'use JSON' 2>/dev/null; then
+			missing="$missing libjson-perl"
+		fi
 	done
 	if [ -n "$missing" ]; then
 		case "$missing" in
@@ -552,7 +560,7 @@ go() {
 			local user
 			ask "GitHub hesap adınız?" "$USER"
 			user="$REPLY"
-			if ! gh_http -u "$user" 'user/show/%s'; then
+			if ! gh_api 'users/%s'; then
 				cry "'$user' adında bir GitHub hesabı yok"
 				if yesno "Tekrar denemek ister misiniz?"; then
 					continue
@@ -574,16 +582,20 @@ go() {
 	# ---------------------------------------------------------------------
 
 	# Mevcut bilgilere göre hedef deponun varlığını kontrol et.
-	if ! gh_http "repos/show/%s/$REPOSITORY" 2>/dev/null || [ -z "$REPLY" ]; then
+	if ! gh_api_fetch "repos/%s/$REPOSITORY" 2>/dev/null; then
 		die "Hesabınızda '$REPOSITORY' isimli bir depo mevcut değil. " \
 		    "Lütfen önce bu depoyu çoğaltarak oluşturun."
 	fi
 
-	local parent
-	parent=$(echo "$REPLY" | sed -ne 's/\s\+:parent:\s\+//p' 2>/dev/null)
+	local origin= "00010011/x"
+	local parent=$(json_get_in_reply parent full_name 2>/dev/null ||:)
 	if [ -z "$parent" ]; then
 		die "Hesabınızda bulunan '$REPOSITORY' deposu çoğaltılmış" \
 		    "(fork edilmiş) bir depo değil."
+	elif [ $parent != "$origin" ]; then
+		die "Hesabınızda bulunan '$REPOSITORY' deposu hatalı bir " \
+		    "depodan ('$parent') çoğaltılmış.  Lütfen bu depoyu silin " \
+		    "ve '$origin' deposundan çoğaltma yapın."
 	fi
 
 	# Şimdilik bir ara dizine klonla, salt okunur olarak (git:// şeması).
