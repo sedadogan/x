@@ -10,19 +10,20 @@ anyattr base && skiptask "baz sistem"
 # ------------------------------------------------------------------------------
 
 GEM_BASE="
+awesome_print
 bundler
 gist
 github
-git-pulls
-grit
-gx
-haml
 json
 launchy
 mime-types
-octopussy
-thor
-ya2yaml
+pry
+pry-coolline
+pry-doc
+rdoc-data
+redcarpet
+sass
+slim
 "
 
 # ------------------------------------------------------------------------------
@@ -34,12 +35,12 @@ ya2yaml
 # ------------------------------------------------------------------------------
 
 GEM_STANDARD="
-irbtools
-irbtools-more
+git-pulls
+gx
 jekyll
-kramdown
 nokogiri
 ronn
+thor
 "
 
 # ------------------------------------------------------------------------------
@@ -51,9 +52,13 @@ chunky_png
 CoffeeTags
 gdata4ruby
 gdocs4ruby
+hirb
+irbtools
+irbtools-more
 methopara
 oily_png
-pythonconfig
+pry-nav
+pry-rails
 rdp-arguments
 "
 
@@ -77,4 +82,9 @@ fi
 if anyattr fat; then
 	installgems "Geliştirici ortamı için gerekli ekstra Gem paketleri kuruluyor" \
 		$GEM_EXTRA
+fi
+
+if hascommand rdoc-data; then
+	say "ri dokümanları güncelleniyor..."
+	sudo rdoc-data --install
 fi

@@ -1,5 +1,5 @@
 require 'ap'
-FancyIrb.start	:rocket_mode   => true,
+FancyIrb.start	:rocket_mode   => false,
 		:colorize      => {
 			:output => false,
         		:rocket_prompt => [:cyan, :bright],
