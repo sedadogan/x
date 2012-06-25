@@ -8,6 +8,7 @@
 
 X_EMAIL='roktas@bil.omu.edu.tr'
 X_NAME='Recai Oktaş'
+X_SHELL='/usr/bin/mc'
 
 . ${X_HOME:=$HOME}/lib/x
 
