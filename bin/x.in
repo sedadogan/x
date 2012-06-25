@@ -56,6 +56,7 @@ readonly COWFILE='doc/images/19x.png'
 readonly DEB_CORE="
 curl
 git
+libio-socket-ssl-perl
 pdmenu
 sudo
 "

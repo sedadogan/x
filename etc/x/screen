@@ -4,6 +4,13 @@ if [ -z "$screen" ]; then
 	# TODO
 fi
 
+# çalıştırılacak kabuğu ayarla
+if [ -n "$X_SHELL" ] && [ -x "$X_SHELL" ]; then
+	shell=$X_SHELL
+else
+	shell=/bin/bash
+fi
+
 # uçbirim ile ilgili bilgi topla
 case "$TERM" in
 *xterm*)
@@ -85,7 +92,7 @@ tmux|*/tmux)
 		flags="-d"
 	fi
 	if ! sh "$screen" has-session -t "$profile" 2>/dev/null; then
-		"$screen" $opts new-session $flags -n sh -s "$profile" "exec /bin/bash"
+		"$screen" $opts new-session $flags -n sh -s "$profile" "exec $shell"
 		for f in $conffiles; do
 			"$screen" source-file "$f"
 		done

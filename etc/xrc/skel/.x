@@ -6,8 +6,12 @@
 #
 # 	man 19-x
 
+# Eposta adresi
 X_EMAIL=
+# Ad ve soyad
 X_NAME=
+# Ekran çoğullayıcıda çalıştırılacak öntanımlı kabuk
+X_SHELL=
 
 . ${X_HOME:=$HOME}/lib/x
 
