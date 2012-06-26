@@ -53,10 +53,10 @@ readonly REPOSITORY_INITIATED_MESSAGE='ilk'
 readonly COWFILE='doc/images/19x.png'
 
 # Bu paketler en başta gerekiyor.
+# XXX Dikkat!  Bunlar birer komut.
 readonly DEB_CORE="
 curl
 git
-libio-socket-ssl-perl
 pdmenu
 sudo
 "
@@ -556,6 +556,9 @@ go() {
 	# GitHub bilgisi topla
 	# ---------------------------------------------------------------------
 
+	# Github denetimleri nasıl pas geçilir?
+	X_NO_SANITY_HINT="[Kurulumu zorlamak için X_NO_SANITY=yes]"
+
 	if [ -z "$GITHUB_USER" ]; then
 		while :; do
 			local user
@@ -568,7 +571,7 @@ go() {
 					continue
 				else
 					die "Lütfen bir GitHub hesabı açın ve" \
-					    "tekrar deneyin."
+					    "tekrar deneyin. $X_NO_SANITY_HINT"
 				fi
 			fi
 			GITHUB_USER="$user"
@@ -586,8 +589,9 @@ go() {
 	# Mevcut bilgilere göre hedef deponun varlığını kontrol et.
 	if [ -z "$X_NO_SANITY" ] &&
 	   ! gh_api_fetch "repos/%s/$REPOSITORY" 2>/dev/null; then
-		die "Hesabınızda '$REPOSITORY' isimli bir depo mevcut değil. " \
-		    "Lütfen önce bu depoyu çoğaltarak oluşturun."
+		die "Hesabınızda '$REPOSITORY' isimli bir depo mevcut değil." \
+		    "Lütfen önce bu depoyu çoğaltarak oluşturun." \
+		    "$X_NO_SANITY_HINT"
 	fi
 
 	if [ -z "$X_NO_SANITY" ]; then
@@ -597,12 +601,13 @@ go() {
 		)
 		if [ -z "$parent" ]; then
 			die "Hesabınızda bulunan '$REPOSITORY' deposu" \
-			    "çoğaltılmış (fork edilmiş) bir depo değil."
+			    "çoğaltılmış (fork edilmiş) bir depo değil." \
+			    "$X_NO_SANITY_HINT"
 		elif [ $parent != "$origin" ]; then
 			die "Hesabınızda bulunan '$REPOSITORY' deposu" \
 			    "hatalı bir depodan ('$parent') çoğaltılmış." \
 			    "Lütfen bu depoyu silin ve '$origin' deposundan" \
-			    "çoğaltma yapın."
+			    "çoğaltma yapın. $X_NO_SANITY_HINT"
 		fi
 	fi
 
