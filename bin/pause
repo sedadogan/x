@@ -1,0 +1,10 @@
+#!/usr/bin/ruby
+
+require "highline/system_extensions"
+include HighLine::SystemExtensions
+
+alias :pause :get_character
+
+if __FILE__ == $0
+  get_character
+end
