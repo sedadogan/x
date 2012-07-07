@@ -44,7 +44,5 @@ TARGET=$(tmux_window_for "$command")
 if [ -n "$TARGET" ]; then
 	tmux select-window -t$TARGET
 else
-	curdir=$(tmux display -p "\$TMUXPWD_#I")
-	[ -z "$curdir" ] || cd "$curdir"
 	tmux new-window ${target:+-t${target}} ${name:+-n${name}} "$LOCALE_ENV exec $(tmux_prog_for "$COMMAND") $*"
 fi
