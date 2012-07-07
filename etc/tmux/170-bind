@@ -11,7 +11,7 @@ bind -n F1 run-shell 'exec x-tmux-man'
 # özel yardım
 bind -n S-F1 run-shell 'exec x-tmux-man 19-not'
 # geliştirme ortamında program çalıştır
-bind -n F12 split-window -h -p 40 'rake run; read _'
+bind -n F12 split-window -h -p 40 'rake -l ~ -r pause run'
 # midnight commander
 bind C new-window "exec mc"
 # htop
