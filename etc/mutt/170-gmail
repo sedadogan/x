@@ -31,8 +31,8 @@ set imap_user = "$X_EMAIL"
 set imap_pass = `x-token gmail`
 
 set imap_check_subscribed=yes
-set mail_check = 120
-set timeout = 300
+set mail_check = 60
+set timeout = 100
 set imap_keepalive = 300
 
 set spoolfile = "imaps://imap.gmail.com:993"
