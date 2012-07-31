@@ -17,3 +17,7 @@ let g:SuperTabMappingBackward = '<c-up>'
 if !executable('ctags')
 	let loaded_taglist = 'yes'
 endif
+
+" localvimrc'nin onay istemesini engelle.
+let g:localvimrc_sandbox = 0
+let g:localvimrc_ask = 0

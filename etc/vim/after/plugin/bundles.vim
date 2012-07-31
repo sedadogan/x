@@ -138,11 +138,6 @@ if exists("colors_name") && colors_name == "tir_black"
 	hi StatusLineNC guifg=black guibg=#202020 ctermfg=234 ctermbg=245
 endif
 
-if exists("g:loaded_localvimrc")
-	let g:localvimrc_sandbox = 0
-	let g:localvimrc_ask = 0
-endif
-
 if exists('g:loaded_taglist')
 	nnoremap <silent> <F8> :TlistToggle<CR>
 	let tlist_go_settings = 'go;p:Packages;t:Types;f:Functions;c:Constants;v:Variables'

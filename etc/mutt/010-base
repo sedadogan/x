@@ -121,14 +121,3 @@ charset-hook iso8859-1 iso8859-9
 charset-hook iso-8859-1 iso8859-9
 
 alternative_order text/plain
-
-# ----------------------------------------------------------------------------
-# İlklendir
-# ----------------------------------------------------------------------------
-
-set spoolfile="+INBOX"
-set folder = ~/Mail
-
-mailboxes `cd ~/Mail && for box in *; do printf "'+$box' "; done`
-unlists *
-unsubscribe *

@@ -27,7 +27,15 @@ set sendmail="x-sendmail"
 set envelope_from=yes
 set use_from=yes
 
-# Gmail'ın Türkçe veya İngilizce olmasına göre farklı ayarlar.
-`p="+Sent Mail"; if [ -d ~/Mail/"Gönderilmiş Postalar" ]; then p="+Gönderilmiş Postalar"; fi; echo "set record=\"$p\""; echo "mailboxes \"$p\""`
-`p="+Drafts"; if [ -d ~/Mail/"Taslaklar" ]; then p="+Taslaklar"; fi; echo "set postponed=\"$p\""; echo "mailboxes \"$p\""`
-`p=; if [ -d ~/Mail/INBOX ]; then p="+INBOX"; fi; echo "mailboxes \"$p\""`
+set imap_user = "$X_EMAIL"
+set imap_pass = `x-token gmail`
+
+set imap_check_subscribed=yes
+set mail_check = 120
+set timeout = 300
+set imap_keepalive = 300
+
+set spoolfile = "imaps://imap.gmail.com:993"
+set folder = "imaps://imap.gmail.com:993"
+set postponed = "+[Gmail]Taslaklar"
+set record = "+[Gmail]/Gönderilmiş Postalar"
