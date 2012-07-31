@@ -38,4 +38,3 @@ set imap_keepalive = 300
 set spoolfile = "imaps://imap.gmail.com:993"
 set folder = "imaps://imap.gmail.com:993"
 set postponed = "+[Gmail]Taslaklar"
-set record = "+[Gmail]/Gönderilmiş Postalar"
