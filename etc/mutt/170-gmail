@@ -38,3 +38,7 @@ set imap_keepalive = 300
 set spoolfile = "imaps://imap.gmail.com:993"
 set folder = "imaps://imap.gmail.com:993"
 set postponed = "+[Gmail]Taslaklar"
+
+# Gmail giden postaları zaten saklıyor, mükerrer posta olmaması için:
+unset record
+set copy=no
