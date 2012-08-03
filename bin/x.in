@@ -29,6 +29,9 @@ fi
 # hangi dizine kurulum yapılacak?
 readonly DESTDIR=$HOME
 
+# Orijin depo hangisi?
+readonly UPSTREAM='00010011/x'
+
 # program ismi
 readonly PROGNAME='kur'
 # x kitaplığı
@@ -595,7 +598,6 @@ go() {
 	fi
 
 	if [ -z "$X_NO_SANITY" ]; then
-		local origin="00010011/x"
 		local parent=$(
 			json_get_in_reply parent full_name 2>/dev/null ||:
 		)
@@ -603,10 +605,10 @@ go() {
 			die "Hesabınızda bulunan '$REPOSITORY' deposu" \
 			    "çoğaltılmış (fork edilmiş) bir depo değil." \
 			    "$X_NO_SANITY_HINT"
-		elif [ $parent != "$origin" ]; then
+		elif [ $parent != "$UPSTREAM" ]; then
 			die "Hesabınızda bulunan '$REPOSITORY' deposu" \
 			    "hatalı bir depodan ('$parent') çoğaltılmış." \
-			    "Lütfen bu depoyu silin ve '$origin' deposundan" \
+			    "Lütfen bu depoyu silin ve '$UPSTREAM' deposundan" \
 			    "çoğaltma yapın. $X_NO_SANITY_HINT"
 		fi
 	fi
@@ -701,7 +703,7 @@ go() {
 		cry "Depo salt-okunur olarak ayarlandı.  Bu makinede depoda" \
 		    "yaptığınız değişiklikleri GitHub'a gönderemezsiniz."
 	fi
-	git remote add upstream "git://github.com/${parent}"
+	git remote add upstream "git://github.com/${UPSTREAM}"
 	say "Üst geliştirici referansı 'upstream' olarak ayarlandı. " \
 	    "Depoyu güncellemek için lütfen şu komutu kullanın:" \
 	    "'git pull upstream master'"
