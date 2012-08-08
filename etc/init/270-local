@@ -1,2 +1,5 @@
 # Kişisel Ayarlar
 export CODEPATH=~/dev/me/code
+export GOPATH=/opt/go:$GOPATH
+export X_PATH=/opt/google_appengine:opt/go/bin:$X_PATH
+alias gae=/opt/google_appengine/dev_appserver.py

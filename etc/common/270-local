@@ -2,7 +2,7 @@
 
 # Aşağıda listelenen makineleri "ana" makine kabul ediyoruz.
 case "${HOSTNAME:=$(hostname)}" in
-kant|marx|descartes|wittgenstein|averroes|ghazali|farabi)
+kant|spinoza|marx|descartes|wittgenstein|averroes|ghazali|farabi)
 	setattr main
 	;;
 esac
