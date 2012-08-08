@@ -30,6 +30,17 @@ if [ -z "$BASH_COMPLETION" ] && [ -f /etc/bash_completion ] && ! shopt -oq posix
                         return 0
                 }"
         }
+
+        # Teamocil desteği
+        [ -d ~/.teamocil ] && _teamocil() {
+                local cur
+                COMPREPLY=()
+                cur="${COMP_WORDS[COMP_CWORD]}"
+
+                local files=$(for f in ~/.teamocil/*; do f=${f##*/}; echo ${f%.*}; done)
+
+                COMPREPLY=($(compgen -W "${files}" $cur))
+        } && complete -F _teamocil teamocil
 else
         make_completion_wrapper() { :; }
 fi
