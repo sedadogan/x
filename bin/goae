@@ -1,0 +1,97 @@
+#!/bin/bash
+
+PROGNAME=${0##*/}
+
+# iletiyi stderr'de görüntüle
+message() {
+	printf -- "$*\n" | fold -s -w ${COLS:-80} >&2
+}
+
+# hata iletisi
+die() {
+	message "${*}"
+	exit 1
+}
+
+# ilklendirilmemiş bir değişken mi?
+isnull() {
+	[[ ! ${!1} && ${!1-_} ]]
+}
+
+# güvenli geçici dizin oluştur
+unset TEMPDIRS_
+usetempdir() {
+	local tempname="$1" keeptemp="$2"
+
+	local prefix="$PROGNAME"
+	[ -n "$prefix" ] || prefix=${0##*/}
+
+	# As a security measure refuse to proceed if mktemp is not available.
+	[ -x /bin/mktemp ] || die "'/bin/mktemp' bulunamadı; sonlanıyor."
+
+	local tempdir="$(/bin/mktemp -d -t ${prefix}.XXXXXXXX)" ||
+		die "mktemp hata döndü"
+
+	[ -d "$tempdir" ] || die "geçici bir dizin oluşturulamadı"
+
+	if isnull TEMPDIRS_; then
+		trap '
+			exitcode=$?
+			[ -z "$TEMPDIRS_" ] || rm -rf -- "${TEMPDIRS_[@]}"
+			unset TEMPDIRS_
+			exit $exitcode
+		' EXIT HUP INT QUIT TERM
+	fi
+
+	eval $(echo "$tempname=\"$tempdir\"")
+
+	[ -n "$keeptemp" ] || TEMPDIRS_+=("$tempdir")
+}
+
+# git deposunu denetle ve tepe dizine çık
+ensuretopgitdir() {
+	local up
+	if ! up="$(git rev-parse --show-cdup 2>/dev/null)"; then
+		die "Çalışma dizini bir git deposu değil"
+	fi
+	[ -z "$up" ] || cd "$up"
+}
+
+ensuretopgitdir
+appbase=$PWD
+
+if [ -n "$GOOGLE_APPENGINE_DIR" ]; then
+	[ -d "$GOOGLE_APPENGINE_DIR" ] || \
+		die "$GOOGLE_APPENGINE_DIR dizini bulunamadı"
+else
+	for d in ~ /opt /usr/local/lib /usr/local; do
+		try="$d/google_appengine"
+		if [ -d "$try" ]; then
+			GOOGLE_APPENGINE_DIR=$try
+			break
+		fi
+	done
+fi
+
+[ -n "$GOOGLE_APPENGINE_DIR" ] || die "Google App Engine dizini bulunamadı"
+
+goroot="$GOOGLE_APPENGINE_DIR/goroot"
+[ -d "$goroot" ] || \
+	die "$GOOGLE_APPENGINE_DIR dizininde Go kökü bulunamadı"
+
+builder="$goroot/bin/go-app-builder"
+[ -x "$builder" ] || \
+	die "$GOOGLE_APPENGINE_DIR dizininde go-app-builder bulunamadı"
+
+
+sources=$(find . -type f -name '*.go')
+[ -n "$sources" ] || die "Go kaynağı bulunamadı"
+
+usetempdir CACHEDIR
+
+$builder -app_base "$appbase" \
+	 -binary_name _go_app \
+	 -dynamic \
+	 -goroot $goroot \
+	 -unsafe \
+	 -work_dir $CACHEDIR $sources
