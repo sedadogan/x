@@ -57,7 +57,12 @@ ensuretopgitdir() {
 	[ -z "$up" ] || cd "$up"
 }
 
+# proje köküne geç
 ensuretopgitdir
+
+[ -f app.yaml ] || [ -f app.yml ] || \
+	die "$PWD bir Google App Engine projesi olarak gözükmüyor"
+
 appbase=$PWD
 
 if [ -n "$GOOGLE_APPENGINE_DIR" ]; then
@@ -84,7 +89,7 @@ builder="$goroot/bin/go-app-builder"
 	die "$GOOGLE_APPENGINE_DIR dizininde go-app-builder bulunamadı"
 
 
-sources=$(find . -type f -name '*.go')
+sources=$(find . -type f -name '*.go' 2>/dev/null)
 [ -n "$sources" ] || die "Go kaynağı bulunamadı"
 
 usetempdir CACHEDIR
