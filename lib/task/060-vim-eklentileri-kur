@@ -53,3 +53,9 @@ if ! hascommand gocode; then
 		cry "golang-go paketi kurulu değil; Gocode kurulmayacak"
 	fi
 fi
+
+# Vim-Pad eklentisi öntanımlı olarak ~/notes dizini ister
+if [ ! -e ~/notes ]; then
+	say "Vim-Pad eklentisi için ~/notes dizini oluşturuluyor..."
+	mkdir ~/notes
+fi
