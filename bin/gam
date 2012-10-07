@@ -1,0 +1,14 @@
+#!/bin/sh
+
+GAMDIR=/opt/google-apps-manager
+
+[ -e $GAMDIR/gam.py ] || {
+	echo >&2 "Google Apps Manager bulunamadı!"
+	echo >&2 ""
+	echo >&2 "Son sürümü indirerek '$GAMDIR' dizinine açın "
+	echo >&2 ""
+	echo >&2 "https://code.google.com/p/google-apps-manager/downloads/list"
+	exit 1
+}
+
+exec python $GAMDIR/gam.py "$@"
