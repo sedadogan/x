@@ -11,3 +11,7 @@ esac
 DEBFULLNAME='Recai Oktaş'
 DEBEMAIL='roktas@debian.org'
 export DEBFULLNAME DEBEMAIL
+
+# Masaüstü klasörü istemiyoruz.
+XDG_DESKTOP_DIR="$HOME/"
+export XDG_DESKTOP_DIR

@@ -46,5 +46,7 @@ augroup alledit
 		imap [C <c-right>
 		imap [D <c-left>
 	endif
+	let mapleader = ","
+	let maplocalleader = ","
 augroup END
 
