@@ -31,3 +31,38 @@ if has("folding")
 		return "="
 	endfunction
 endif
+
+" Folyo işleri
+
+" TODO Bu ayarlar sadece folyolarda etkin olmalı
+
+function! s:Compile()
+	let view = winsaveview()
+	update
+	silent !rake compile[%]
+	redraw!
+	call winrestview(view)
+	if v:shell_error
+		echohl Error | echomsg "Compile returned error" | echohl None
+	endif
+endfunction
+
+function! s:View()
+	let view = winsaveview()
+	update
+	silent !rake view[%]
+	redraw!
+	call winrestview(view)
+	if v:shell_error
+		echohl Error | echomsg "View returned error" | echohl None
+	endif
+endfunction
+
+command! -buffer FolioCompile call s:Compile()
+command! -buffer FolioView call s:View()
+
+nmap <f9> :FolioCompile<cr>
+nmap <f10> :FolioCompile<cr>:FolioView<cr>
+
+imap <f9> <esc><f9>`.i
+imap <f10> <esc><f10>`.i
