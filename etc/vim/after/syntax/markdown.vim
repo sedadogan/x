@@ -1,5 +1,7 @@
-syn region markdownCodeBlock start="    \|\t" end="$" contained contains=markdownCodeBlockShebang
-syn match markdownCodeBlockShebang "\%(    \|\t\)\%(!\|#!\)\S\+" contained
+syn clear markdownCodeBlock
+syn region markdownCodeBlock start=" \{8,}\|\t" end="$" contained
+syn region markdownCodeBlock start=" \{8,}\|\t" end="$" contained contains=markdownCodeBlockShebang
+syn match markdownCodeBlockShebang "\%( \{8,}\|\t\)\%(!\|#!\)\S\+" contained
 
 hi! def link markdownCodeBlockShebang SpecialComment
 hi! def link markdownCode String
