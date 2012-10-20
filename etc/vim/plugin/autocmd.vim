@@ -34,10 +34,6 @@ augroup mailedit
 	autocmd BufUnload mutt-* call CheckAttachments()
 augroup END
 
-augroup markdownedit
-	autocmd FileType markdown setlocal et nosta sts=4 sw=4
-augroup END
-
 augroup otledit
 	autocmd FileType vo_base setlocal foldcolumn=0
 	autocmd BufRead,BufNewFile *.vala set ft=vala
