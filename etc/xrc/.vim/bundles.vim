@@ -49,5 +49,4 @@
 " Bundle: git://github.com/vim-scripts/tComment.git
 " Bundle: git://github.com/vim-scripts/tir_black.git
 " Bundle: git://github.com/vim-scripts/xmledit.git
-" Bundle: git://github.com/vim-scripts/yaifa.vim.git
 " Bundle: git://github.com/vim-scripts/ZenCoding.vim.git

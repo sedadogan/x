@@ -66,3 +66,25 @@ nmap <f10> :FolioCompile<cr>:FolioView<cr>
 
 imap <f9> <esc><f9>`.i
 imap <f10> <esc><f10>`.i
+
+iab <buffer> <expr> *  <SID>DelimInsert("*", "*<Space><Space>")
+iab <buffer> <expr> #  <SID>DelimInsert("#", "#<Space><Space>")
+iab <buffer> <expr> ## <SID>DelimInsert("##", "##<Space>")
+
+function! s:DelimInsert(abbr, str, ...)
+	if a:0 > 0
+		let pos = a:1
+	else
+		let pos = 1
+	endif
+	if col(".") != strlen(a:abbr) + pos
+        	return a:abbr
+	endif
+	if getchar(1) == 32 " space
+		return a:str
+	else
+		return a:abbr
+	endif
+endfunction
+
+setlocal et nosta ts=8 sts=8 sw=8
