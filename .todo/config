@@ -75,4 +75,3 @@ export COLOR_DONE=$LIGHT_CYAN
 # priority hiding, context hiding, and project hiding. That is,
 # just before the list output is displayed.
 #
- export TODOTXT_FINAL_FILTER='tac'
