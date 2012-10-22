@@ -2,7 +2,7 @@
 #
 # Kullanım: <URL>
 get() {
-	wget -q -O- "$@"
+	curl -s -k "$@"
 }
 
 
