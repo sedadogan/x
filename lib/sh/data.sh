@@ -15,11 +15,13 @@ json_get() {
 		use warnings;
 		use feature qw(say);
 		use open qw(:std :utf8);
+		use Encode qw(encode_utf8);
 
 		use JSON qw(decode_json);
 
 		my $json = do { local $/; <STDIN> };
 		die "Empty json content!\n" unless defined $json;
+		$json = encode_utf8($json);
 
 		my ($decoded_json, @stack) = (decode_json($json), ());
 		while (@ARGV) {
