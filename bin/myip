@@ -1,3 +1,2 @@
 #!/bin/sh
-wget -qO- whatismyip.org
-echo
+curl -s http://ifconfig.me
