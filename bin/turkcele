@@ -33,6 +33,42 @@ xaptget() {
 		--quiet --yes --force-yes --no-install-recommends --ignore-missing "$@"
 }
 
+locale_generate() {
+	local name
+
+	local -a missings
+
+	for name; do
+		/usr/sbin/validlocale "$name" 2>/dev/null || missings+="$name"
+	done
+
+	[[ -n "${missings[@]}" ]] || return 0
+
+	if [ -x /usr/sbin/locale-gen ] && ! [ -f /etc/locale.gen ]; then
+		# aklı başında bir locale-gen var gibi; Ubuntu veya türevi
+		/usr/sbin/locale-gen "${missings[@]}"
+		echo >&2 "Eksik '${missings[@]}' yerelleri üretildi."
+	else
+		# muhtemelen klasik bir Debian sistemi
+		for name in "${missings[@]}"; do
+			local locale charset input
+			/usr/sbin/validlocale "$name" 2>/dev/null | if read locale charset; then
+				if [[ -n $locale ]] && [[ -n $charset ]]; then
+					if [[ -f "${LOCALESDIR}/${locale}" ]]; then
+						input=$locale
+					else
+						input=$(echo $locale | sed 's/\([^.]*\)[^@]*\(.*\)/\1\2/')
+					fi
+					if /usr/bin/localedef -i "$input" -c -f "$charset" \
+						-A /usr/share/locale/locale.alias "$locale"; then
+						echo >&2 "Eksik olan '$name' yereli üretildi."
+					fi
+				fi
+			fi
+		done
+	fi
+}
+
 if [ $(id -u) -ne 0 ]; then
 	echo >&2 "Yönetici hakları gerekiyor."
 	exit 1
@@ -48,21 +84,7 @@ fi
 
 # Eksik yerel varsa üret.
 echo >&2 "Eksik yereller denetleniyor..."
-for n in "tr_TR.UTF-8" "tr_TR" "en_US.UTF-8"; do
-	/usr/sbin/validlocale "$n" 2>/dev/null | if read locale charset; then
-		if [ -n "$locale" ] && [ -n "$charset" ]; then
-			if [ -f "${LOCALESDIR}/${locale}" ]; then
-				input=$locale
-			else
-				input=$(echo $locale | sed 's/\([^.]*\)[^@]*\(.*\)/\1\2/')
-			fi
-			if /usr/bin/localedef -i "$input" -c -f "$charset" \
-				-A /usr/share/locale/locale.alias "$locale"; then
-				echo >&2 "Eksik olan '$n' yereli üretildi."
-			fi
-		fi
-	fi
-done
+locale_generate "tr_TR.UTF-8" "tr_TR" "en_US.UTF-8"
 
 # Öntanımlı yerel Türkçe, fakat bu bir "headless" sistem ise İngilizce UTF-8.
 X_LANG=tr_TR.UTF-8; [ -z "$IS_HEADLESS" ] || X_LANG=en_US.UTF-8
