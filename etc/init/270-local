@@ -1,7 +1,7 @@
 # Kişisel Ayarlar
-export CODEPATH=~/dev/me/code
+PATH=$PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
+
 export GOPATH=/opt/go:$GOPATH
-export X_PATH=$X_PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
 alias gae=/opt/google_appengine/dev_appserver.py
 alias t="todo -cTn"
 alias T="todo -cTn listall"
