@@ -1,0 +1,25 @@
+# PATH'teki tekrarları kaldır
+pathsqueeze() {
+	local saved_ifs="$IFS"
+	IFS=:
+
+	set -- $PATH
+
+	local -A seen=( [$1]=1 )
+	local new_path=$1
+
+	shift
+	while [ $# -gt 0 ]; do
+		if [ -z "${seen[$1]}" ]; then
+			new_path="$new_path:$1"
+			seen[$1]=1
+		fi
+		shift
+	done
+
+	IFS="$saved_ifs"
+	PATH="$new_path"
+}
+
+pathsqueeze
+

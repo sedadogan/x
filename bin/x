@@ -182,58 +182,6 @@ pathmunge() {
 	PATH=$(mungedpath "$PATH" "$@")
 }
 
-# PATH'teki tekrarları kaldır
-pathsqueeze() {
-	local saved_ifs="$IFS"
-	IFS=:
-
-	set -- $PATH
-
-	local -A seen=( [$1]=1 )
-	local new_path=$1
-
-	shift
-	while [ $# -gt 0 ]; do
-		if [ -z "${seen[$1]}" ]; then
-			new_path="$new_path:$1"
-			seen[$1]=1
-		fi
-		shift
-	done
-
-	IFS="$saved_ifs"
-	PATH="$new_path"
-}
-
-# sona tekrarsız PATH ekle
-pathappend() {
-	local saved_ifs="$IFS"
-	local p
-
-	IFS=:
-
-	local -a paths=( $PATH )
-	local -A path
-	for p in "${paths[@]}"; do
-		path[$p]=1
-	done
-
-	for p in $1; do
-		if [[ ${path[$p]} -ne 1 ]]; then
-			PATH=$PATH:$p
-			path[$p]=1
-		fi
-	done
-
-	IFS="$saved_ifs"
-}
-
-# başa tekrarsız PATH ekle
-pathprepend() {
-	PATH=$1:$PATH
-	pathsqueeze
-}
-
 # tercih edilen sırada bir program seç
 selectalternatives() {
 	local prog
@@ -366,8 +314,6 @@ exportgit() {
 
 # x ortam değişkenlerini anons et
 exportx() {
-	# PATH'teki tekrarları kaldır
-	pathsqueeze
 	export PATH X_PATH X_ATTR X_EDITOR X_TERM X_SCREEN X_NAME X_EMAIL
 }
 
