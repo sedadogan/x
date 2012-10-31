@@ -138,6 +138,11 @@ gh_writable() {
 			if ! [ -d ~/.ssh ] || [ -r ~/.ssh/id_rsa ] || [ -r ~/.ssh/id_dsa ]; then
 				IS_SSHABLE=no
 			fi
+			cry "SSH yetkilendirme ajanı aktif değil."
+			cry "Yeni bir yetkilendirme ajanı oluşturulacak;"
+                            "lütfen öntanımlı SSH anahtarına ait parolayı girin."
+			eval $(ssh-agent)
+			ssh-add
 		fi
 		if [ -z "${IS_SSHABLE+X}" ]; then
 			# Aksi halde daha yorucu ve çirkin bir kontrol gerekiyor.
