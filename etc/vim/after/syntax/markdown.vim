@@ -31,7 +31,7 @@ hi Dimmed cterm=bold gui=bold ctermfg=240
 hi Green cterm=bold gui=bold ctermfg=158 guifg=#2e6654
 
 hi! def link markdownCodeBlockShebang Comment
-hi! def link markdownCode Green
+hi! def link markdownCode Identifier
 hi! def link markdownCodeBlock Identifier
 
 hi! def link markdownItemBullet Blue
