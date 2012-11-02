@@ -13,11 +13,15 @@ let g:DrChipTopLvlMenu="Plugin."
 let g:SuperTabMappingForward  = '<c-down>'
 let g:SuperTabMappingBackward = '<c-up>'
 
-" exuberant-ctags paketi kurulu olmayabilir, taglist eklentisini sustur.
+" Exuberant-ctags paketi kurulu olmayabilir, taglist eklentisini sustur.
 if !executable('ctags')
 	let loaded_taglist = 'yes'
 endif
 
-" localvimrc'nin onay istemesini engelle.
+" Localvimrc'nin onay istemesini engelle.
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
+
+" Pad eklentisi şikayet etmesin. Bu ayarı daha sonra local.vim'de
+" değiştirebiliriz.
+let g:pad_dir = $HOME
