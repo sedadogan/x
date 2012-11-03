@@ -48,19 +48,25 @@ usetempdir() {
 	[ -n "$keeptemp" ] || TEMPDIRS_+=("$tempdir")
 }
 
-# git deposunu denetle ve tepe dizine çık
-ensuretopgitdir() {
-	local up
-	if ! up="$(git rev-parse --show-cdup 2>/dev/null)"; then
-		die "Çalışma dizini bir git deposu değil"
-	fi
-	[ -z "$up" ] || cd "$up"
+locate_conf() {
+	while [ "$PWD" != "/" ]; do
+
+		for f in app.yaml app.yml; do
+			if [ -f $f ]; then
+				return 0
+			fi
+		done
+		cd ..
+	done
+	return 1
 }
 
-# proje köküne geç
-ensuretopgitdir
+if [ $# -gt 0 ]; then
+	locate_conf
+	exit $?
+fi
 
-[ -f app.yaml ] || [ -f app.yml ] || \
+locate_conf || \
 	die "$PWD bir Google App Engine projesi olarak gözükmüyor"
 
 appbase=$PWD
