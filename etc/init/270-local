@@ -4,4 +4,4 @@ export PATH=$PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
 export GOPATH=/opt/go:$GOPATH
 alias gae=/opt/google_appengine/dev_appserver.py
 alias t="todo -cTn"
-alias T="todo -cTn listall"
+alias T="todo -cTn listall; todo -cTn list"
