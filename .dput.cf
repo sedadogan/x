@@ -1,0 +1,11 @@
+[DEFAULT]
+default_host_main = notspecified
+allow_unsigned_uploads = 0
+run_dinstall = 0
+
+[19]
+fqdn = deb.ondokuz.biz
+method = scp
+login = cin
+incoming = /srv/debian/incoming
+post_upload_command = ssh cin@deb.ondokuz.biz reprepro -b /srv/debian processincoming default

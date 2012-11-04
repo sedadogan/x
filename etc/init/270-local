@@ -1,5 +1,5 @@
 # Kişisel Ayarlar
-PATH=$PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
+export PATH=$PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
 
 export GOPATH=/opt/go:$GOPATH
 alias gae=/opt/google_appengine/dev_appserver.py
