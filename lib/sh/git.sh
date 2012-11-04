@@ -139,7 +139,7 @@ gh_writable() {
 				IS_SSHABLE=no
 			fi
 			cry "SSH yetkilendirme ajanı aktif değil."
-			cry "Yeni bir yetkilendirme ajanı oluşturulacak;"
+			cry "Yeni bir yetkilendirme ajanı oluşturulacak;" \
                             "lütfen öntanımlı SSH anahtarına ait parolayı girin."
 			eval $(ssh-agent)
 			ssh-add
