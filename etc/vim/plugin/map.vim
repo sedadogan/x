@@ -70,7 +70,7 @@ vmap <silent> <c-x>z <c-c><c-x>z
 imap <silent> <c-x>z <c-o><c-x>z
 
 " Quit
-nnoremap <silent> <c-x>q :q<cr>
+nnoremap <silent> <c-x>q :qa<cr>
 vmap <silent> <c-x>q <c-c><c-x>q
 imap <silent> <c-x>q <c-o><c-x>q
 
