@@ -2,7 +2,7 @@
 
 shift
 case "$1" in
-a|a.*)    $PAGER "$HOME/._/a.md" ;;
-""|p|p.*) $PAGER "$HOME/._/p.md" ;;
-*)        $PAGER "$HOME/._/$1"   ;;
+a|a.*)    $PAGER $HOME/._/a.md ;;
+""|p|p.*) $PAGER $HOME/._/_/[0-9]proje ;;
+*)        $PAGER $HOME/._/_/[0-9]$1    ;;
 esac
