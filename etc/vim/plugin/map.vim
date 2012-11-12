@@ -69,10 +69,15 @@ nnoremap <silent> <c-x>z :only<cr>
 vmap <silent> <c-x>z <c-c><c-x>z
 imap <silent> <c-x>z <c-o><c-x>z
 
-" Quit
-nnoremap <silent> <c-x>q :q<cr>:qa<cr>
+" Quit current window
+nnoremap <silent> <c-x>q :q<cr>
 vmap <silent> <c-x>q <c-c><c-x>q
 imap <silent> <c-x>q <c-o><c-x>q
+
+" Update and Quit current window
+nnoremap <silent> <c-x>x :x<cr>
+vmap <silent> <c-x>x <c-c><c-x>x
+imap <silent> <c-x>x <c-o><c-x>x
 
 " Abort all
 nnoremap <silent> <c-x>Q :qa!<cr>
