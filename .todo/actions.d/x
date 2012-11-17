@@ -1,0 +1,11 @@
+#!/bin/bash
+case $1 in
+"usage")
+	;;
+*)
+	shift
+	$TODO_FULL_SH add $*
+	n=$($TODO_FULL_SH -px 'list' | tail -3 | head -1 | cut -f1 -d ' ')
+	$TODO_FULL_SH 'do' $n
+	;;
+esac
