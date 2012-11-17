@@ -1,2 +1,9 @@
 #!/bin/sh
-shift; vim -c OpenPad -c "normal i$*"
+case $1 in
+"usage")
+	echo "$(basename $0) [NOTE TITLE]"
+	;;
+*)
+	vim -c OpenPad -c "normal i$*"
+	;;
+esac
