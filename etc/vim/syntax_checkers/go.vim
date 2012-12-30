@@ -6,9 +6,9 @@ if ! exists("g:is_google_appengine")
 endif
 
 if g:is_google_appengine
-	let s:supported_checkers = ["goae", "go", "6g", "gofmt"]
+	let g:syntastic_go_checker = "goae"
 else
-	let s:supported_checkers = ["go", "6g", "gofmt"]
+	let g:syntastic_go_checker = "go"
 endif
 
-call SyntasticLoadChecker(s:supported_checkers, 'go')
+call SyntasticLoadChecker('go')
