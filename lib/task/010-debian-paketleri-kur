@@ -63,7 +63,6 @@ whois
 DEB_STANDARD="
 anacron
 bti
-byobu
 ca-certificates
 cowsay
 cplay
@@ -71,7 +70,6 @@ devilspie
 dnstracer
 github-cli
 gitk
-guake
 imagemagick
 ipcalc
 jpegoptim
@@ -144,6 +142,7 @@ glibc-doc
 golang-go
 graphviz
 gtk2-engines-wonderland
+guake
 highlight
 idle
 imagemagick
@@ -158,6 +157,7 @@ libglib2.0-doc
 librspec-ruby1.9.1
 libtemplate-multilingual-perl
 libtemplate-perl
+lmodern
 manpages-dev
 manpages-posix
 mercurial
