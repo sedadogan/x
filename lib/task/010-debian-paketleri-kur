@@ -142,7 +142,6 @@ glibc-doc
 golang-go
 graphviz
 gtk2-engines-wonderland
-guake
 highlight
 idle
 imagemagick
@@ -161,7 +160,6 @@ lmodern
 manpages-dev
 manpages-posix
 mercurial
-muttprint
 octave3.2
 pandoc
 pdfjam
@@ -172,7 +170,8 @@ php5-cli
 pyflakes
 python-doc
 python-docutils
-python-landslide
+python-landslide-patched
+python-markdown-extra
 python-matplotlib
 python-numpy
 python-pygments
@@ -188,7 +187,6 @@ texlive-latex-extra
 texlive-latex-recommended
 texlive-publishers
 texlive-xetex
-tilda
 tk-tile
 ttf-inconsolata
 ttf-ubuntu-title
