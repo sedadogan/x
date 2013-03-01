@@ -68,7 +68,6 @@ cowsay
 cplay
 devilspie
 dnstracer
-github-cli
 gitk
 imagemagick
 ipcalc
@@ -130,7 +129,6 @@ xterm
 DEB_EXTRA="
 bitlbee
 build-essential
-byzanz
 chromium-browser
 cmake
 cscope
