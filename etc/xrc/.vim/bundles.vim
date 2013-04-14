@@ -4,7 +4,7 @@
 " Bundle: git://github.com/bronson/vim-trailing-whitespace.git
 " Bundle: git://github.com/ervandew/supertab.git
 " Bundle: git://github.com/garbas/vim-snipmate.git
-" Bundle: git://github.com/honza/snipmate-snippets.git
+" Bundle: git://github.com/honza/vim-snippets.git
 " Bundle: git://github.com/jnwhiteh/vim-golang.git
 " Bundle: git://github.com/juvenn/mustache.vim.git
 " Bundle: git://github.com/kchmck/vim-coffee-script.git

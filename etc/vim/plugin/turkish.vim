@@ -39,14 +39,14 @@ if mapcheck("<Char-286>") == "" | noremap <Char-286> { | vnoremap <Char-286> { |
 " ş → scedilla
 " Kursörün altındaki kelimeyi bul/değiştir
 if mapcheck("<Char-351>") == ""
-	noremap <Char-350> :%s/<c-r>=expand("<cword>")<cr>//gc<left><left><left>
-	vnoremap <Char-350> :s/<c-r>=expand("<cword>")<cr>//gc<left><left><left>
+	noremap <Char-351> :%s/<c-r>=expand("<cword>")<cr>//gc<left><left><left>
+	vnoremap <Char-351> :s/<c-r>=expand("<cword>")<cr>//gc<left><left><left>
 endif
 " Ş → Scedilla
 " Bul/değiştir istemine geç
 if mapcheck("<Char-350>") == ""
-	noremap <Char-351> :%s///gc<left><left><left><left>
-	vnoremap <Char-351> :s///gc<left><left><left><left>
+	noremap <Char-350> :%s///gc<left><left><left><left>
+	vnoremap <Char-350> :s///gc<left><left><left><left>
 endif
 
 " ------------------------------------------------------------------------------
