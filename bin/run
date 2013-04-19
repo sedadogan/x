@@ -1,7 +1,5 @@
 #!/bin/sh
 
 echo $PWD
-read ok
-exit 0
 rake run
 pause
