@@ -36,10 +36,13 @@ endif
 if exists("g:loaded_syntastic_plugin")
 	sign define SyntasticError text=―▶ texthl=Search
 	sign define SyntasticWarning text=>> texthl=Warning
-	let g:syntastic_enable_signs=1
+	let g:syntastic_enable_signs = 1
 	set statusline+=%#warningmsg#
 	set statusline+=%{SyntasticStatuslineFlag()}
 	set statusline+=%*
+
+	" Ruby'de rubocop denetimi istiyoruz.
+	let g:syntastic_ruby_checkers = ['mri', 'rubocop']
 
 	if !empty(s:goinfo)
 		" Önce mevcut go eklentisini yükle (üzerine yazacağız)

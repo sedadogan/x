@@ -21,6 +21,7 @@ pry
 pry-doc
 rdoc-data
 redcarpet
+rubocop
 sass
 slim
 "
