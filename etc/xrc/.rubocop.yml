@@ -1,0 +1,7 @@
+# Use only ascii symbols in identifiers and comments.
+AsciiIdentifiersAndComments:
+  Enabled: false
+
+# Favor modifier while/until usage when you have a single-line body.
+WhileUntilModifier:
+  Enabled: false
