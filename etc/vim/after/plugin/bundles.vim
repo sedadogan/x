@@ -63,6 +63,9 @@ if exists("g:loaded_syntastic_plugin")
 		endif
 	endfunction
 	au FileType sh call s:disable_checkbashisms_checker()
+
+	" Bashism denetiminde çok kısıtlayıcı olma
+	let g:syntastic_sh_checkbashisms_args="-x"
 endif
 
 if exists("g:loaded_SingleCompile")
