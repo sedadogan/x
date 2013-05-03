@@ -1,6 +1,6 @@
 # Servisleri hızlı şekilde yönetebilmek için bir kısa yol.
 # Örnekler:
-# 
+#
 # 	i cron       # sudo service cron restart
 # 	i nginx stop # sudo service nginx stop
 #   i a<TAB>     # ismi a ile başlayan servisler
@@ -41,3 +41,14 @@ _services_show() {
 }
 alias i='_i'
 complete -o default -F _services_show i
+
+# Pro gem için dizin değiştirme işlevi: cd yerine pd
+#
+# Pro gem'i kurmayı ve PRO_BASE değişkeniyle proje kök dizinini ayarlamayı
+# unutmayın:
+# 	$ sudo gem install pro
+# 	$ echo 'export PRO_BASE=$HOME/<vesaire>' >>~/etc/init/270-local
+pd() {
+	cd $(pro search $1)
+}
+
