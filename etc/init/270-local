@@ -5,3 +5,5 @@ alias t="todo -cTn"
 alias T="todo -cTn listall; todo -cTn list"
 
 export PATH=$PATH:/usr/lib/go/bin:/opt/go/bin:/opt/google_appengine
+
+export PRO_BASE=$HOME/src
