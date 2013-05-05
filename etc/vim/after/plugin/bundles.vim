@@ -66,6 +66,8 @@ if exists("g:loaded_syntastic_plugin")
 
 	" Bashism denetiminde çok kısıtlayıcı olma
 	let g:syntastic_sh_checkbashisms_args="-x"
+
+	au FileType go au BufWritePre <buffer> Fmt
 endif
 
 if exists("g:loaded_SingleCompile")
